@@ -73,29 +73,50 @@ def has_valid_dns(domain):
     except:
         return False
 
-def phishing_score(domain, brand_match, entropy, has_keyword, tld_suspicious, issuer, registration_days):
+def phishing_score(
+    entropy: float,
+    has_keyword: bool,
+    tld_suspicious: bool,
+    issuer: str,
+    registration_days: int
+) -> int:
     score = 0
-    if brand_match:
+
+    # Cecha 1: entropia domeny
+    if entropy >= 3.7:
+        score += 3
+    elif entropy >= 3.4:
         score += 2
+    elif entropy >= 3.1:
+        score += 1
+
+    # Cecha 2: słowa kluczowe
     if has_keyword:
         score += 2
-    if entropy >= 3.6:
-        score += 1
+
+    # Cecha 3: podejrzane TLD
     if tld_suspicious:
         score += 1
-    if issuer.lower() == "let's encrypt":
-        score += 1
-    if registration_days is not None and registration_days < 30:
-        score += 2
-    if not has_valid_dns(domain):
-        score += 1
-    return score
 
-def extract_features(domain: str, brand_match, issuer: str):
+    # Cecha 4: podejrzani issuerzy
+    if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."}:
+        score += 1
+
+    # Cecha 5: młoda domena
+    if registration_days is not None:
+        if registration_days < 14:
+            score += 3
+        elif registration_days < 60:
+            score += 2
+        elif registration_days < 180:
+            score += 1
+
+    return min(score, 10)
+
+def extract_features(domain: str, issuer: str, registration_days: int = None):
     tld = domain.split(".")[-1]
     tld_suspicious = tld in TLD_SUSPICIOUS
     has_keyword = contains_suspicious_word(domain)
-    entropy = calculate_entropy(domain)
-    age_days = domain_registration_age(domain)
-    score = phishing_score(domain, brand_match, entropy, has_keyword, tld_suspicious, issuer, age_days)
-    return tld, tld_suspicious, has_keyword, round(entropy, 2), age_days, score
+    entropy = round(calculate_entropy(domain), 2)
+    score = phishing_score(entropy, has_keyword, tld_suspicious, issuer, registration_days)
+    return tld, tld_suspicious, has_keyword, entropy, registration_days, score

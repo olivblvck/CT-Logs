@@ -1,15 +1,15 @@
-
 # certstream/listener.py
 import websocket
 import json
 import csv
 import os
-from analysis.phishing_detect_scoring import is_similar, extract_features
+from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
+import time
 
 CERTSTREAM_URL = "ws://127.0.0.1:8080"
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUTPUT_FILE = os.path.join(PROJECT_ROOT, "data", "suspected_phishing.csv")
+OUTPUT_FILE = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
 
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
@@ -18,7 +18,7 @@ if not os.path.exists(OUTPUT_FILE) or os.stat(OUTPUT_FILE).st_size == 0:
         writer = csv.writer(csvfile)
         writer.writerow([
             "timestamp", "domain", "brand_match", "similarity_score",
-            "issuer", "tld", "tld_suspicious", "has_keyword", 
+            "issuer", "tld", "tld_suspicious", "has_keyword",
             "entropy", "registration_days", "score"
         ])
 
@@ -40,7 +40,12 @@ def on_message(ws, message):
                     suspicious, brand, score_match = is_similar(domain)
                     if suspicious:
                         print(f"[ALERT] Possible phishing domain: {domain} ~ {brand} (score={score_match:.2f})")
-                        tld, tld_suspicious, has_keyword, entropy, reg_days, score = extract_features(domain, brand, issuer)
+
+                        reg_days = domain_registration_age(domain)
+                        tld, tld_suspicious, has_keyword, entropy, reg_days, score = extract_features(domain, issuer, reg_days)
+
+                        print(f"        → Features: TLD={tld}, Suspicious={tld_suspicious}, Keyword={has_keyword}, Entropy={entropy}, Days={reg_days}, Score={score:.2f}")
+
                         writer.writerow([
                             timestamp, domain, brand, f"{score_match:.2f}", issuer,
                             tld, tld_suspicious, has_keyword, entropy, reg_days, score
@@ -57,13 +62,27 @@ def on_close(ws, close_status_code, close_msg):
 def on_open(ws):
     print("[INFO] Connected to local certstream server...")
 
+
+def run_client():
+    while True:
+        print("[INFO] Starting CertStream client...")
+        try:
+            ws = websocket.WebSocketApp(
+                CERTSTREAM_URL,
+                on_message=on_message,
+                on_error=on_error,
+                on_close=on_close,
+                on_open=on_open
+            )
+            ws.run_forever()
+        except Exception as e:
+            print(f"[ERROR] WebSocket client crashed: {e}")
+        print("[INFO] Reconnecting in 5 seconds...")
+        time.sleep(5)
+
 if __name__ == "__main__":
-    print("[INFO] Starting CertStream client...")
-    ws = websocket.WebSocketApp(
-        CERTSTREAM_URL,
-        on_message=on_message,
-        on_error=on_error,
-        on_close=on_close,
-        on_open=on_open
-    )
-    ws.run_forever()
+    run_client()
+
+
+
+
