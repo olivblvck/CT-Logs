@@ -1,3 +1,4 @@
+
 import Levenshtein
 import math
 from collections import Counter
@@ -20,15 +21,26 @@ def is_similar(domain, threshold=0.8):
             return True, brand, dist
     return False, None, None
 
+# Rozszerzony zestaw podejrzanych słów
 def contains_suspicious_word(domain):
-    suspicious_words = {"login", "verify", "secure", "update", "account", "signin", "password", "auth", "bank", "pay"}
+    suspicious_words = {
+        "login", "verify", "secure", "update", "account", "signin",
+        "password", "auth", "bank", "pay", "confirm", "reset", "validate",
+        "webmail", "support", "unlock", "user", "invoice"
+    }
     return any(word in domain.lower() for word in suspicious_words)
 
+# Entropia domeny
 def calculate_entropy(s):
     p, lns = Counter(s), float(len(s))
     return -sum(count / lns * math.log2(count / lns) for count in p.values())
 
-TLD_SUSPICIOUS = {"xyz", "top", "buzz", "shop", "online", "click", "link", "work", "support"}
+# Rozszerzona lista podejrzanych TLD
+TLD_SUSPICIOUS = {
+    "xyz", "top", "buzz", "shop", "online", "click", "link", "support",
+    "help", "fit", "club", "live", "life", "host", "press", "work", "today",
+    "site", "website", "space", "rest", "fail", "gdn", "uno", "trade"
+}
 
 def extract_features(domain: str):
     tld = domain.split(".")[-1]

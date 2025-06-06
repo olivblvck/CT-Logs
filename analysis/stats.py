@@ -10,40 +10,40 @@ CSV_PATH = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
 # Wczytanie danych
 df = pd.read_csv(CSV_PATH)
 
-print("🔢 Liczba wszystkich rekordów:", len(df))
-print("🔢 Liczba unikalnych domen:", df["domain"].nunique())
+print("Liczba wszystkich rekordów:", len(df))
+print("Liczba unikalnych domen:", df["domain"].nunique())
 
-# 🌐 TLD
-print("\n🌐 Top 10 TLD:")
+# TLD
+print("\nTop 10 TLD:")
 print(df["tld"].value_counts().head(10))
 
-# 🔐 Issuerzy
-print("\n🏢 Top 10 Issuerów:")
+# Issuerzy
+print("\nTop 10 Issuerów:")
 print(df["issuer"].value_counts().head(10))
 
-# 🧠 Entropia
-print("\n📈 Statystyka entropii:")
+# Entropia
+print("\nStatystyka entropii:")
 print(df["entropy"].describe())
 
-# 📦 Histogram entropii
+# Histogram entropii
 df["entropy"].plot.hist(bins=30, title="Rozkład entropii domen", figsize=(8,4))
 plt.xlabel("Entropia")
 plt.tight_layout()
 plt.show()
 
-# 💬 Podejrzane słowa
+# Podejrzane słowa
 print("\nDomeny z podejrzanymi słowami:")
 print(df["has_keyword"].value_counts())
 
-# 🧨 Podejrzane TLD
+# Podejrzane TLD
 print("\nDomeny z podejrzanym TLD:")
 print(df["tld_suspicious"].value_counts())
 
-# 👤 Najczęściej podobne marki
+# Najczęściej podobne marki
 print("\nNajczęściej dopasowane znane marki:")
 print(df["brand_match"].value_counts().head(10))
 
-# 🔗 Korelacja: issuer + podejrzany TLD + słowo kluczowe
+# Korelacja: issuer + podejrzany TLD + słowo kluczowe
 print("\nKombinacje issuer + TLD podejrzany + słowo kluczowe:")
 combo = df.groupby(["issuer", "tld_suspicious", "has_keyword"]).size().reset_index(name="count")
 print(combo.sort_values(by="count", ascending=False).head(15))
