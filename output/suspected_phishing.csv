@@ -1,0 +1,529 @@
+timestamp,domain,brand_match,similarity_score,issuer,tld,tld_suspicious,has_keyword,entropy,registration_days,score
+1749253256.965,fhtt.com,ft.com,0.86,Let's Encrypt,com,False,False,2.75,8163,1.75
+1749253257.168,frubie.com,forbes.com,0.80,Let's Encrypt,com,False,False,3.32,349,2.5
+1749253257.208,ochonetwork.com,foodnetwork.com,0.87,Google Trust Services,com,False,False,3.24,300,1.75
+1749253257.36,sandera.com,pandora.com,0.82,Let's Encrypt,com,False,False,3.28,8992,2.5
+1749253257.366,ozipa.com,mozilla.com,0.80,Let's Encrypt,com,False,False,2.95,3305,1.5
+1749253257.446,idigio.com,diigo.com,0.84,Let's Encrypt,com,False,False,2.65,8500,1.5
+1749253257.526,mebk.com,mlb.com,0.80,Let's Encrypt,com,False,False,2.75,7485,1.5
+1749253257.532,interfoundry.com,siteground.com,0.80,Let's Encrypt,com,False,False,3.62,1175,3.5
+1749253257.543,baiketan.com,ikea.com,0.80,Google Trust Services,com,False,False,3.42,22,4.5
+1749253257.738,spip.debtadvisor.net,residentadvisor.net,0.82,Let's Encrypt,net,False,False,3.62,2214,3.5
+1749253257.741,ovxy.com,vox.com,0.80,Let's Encrypt,com,False,False,2.75,6651,1.5
+1749253257.743,angeltier.com,angelfire.com,0.85,Let's Encrypt,com,False,False,3.55,1171,3.5
+1749253257.767,bk8khfreelance.com,freelancer.com,0.81,Google Trust Services,com,False,False,3.68,0,5.5
+1749253257.769,stuic.com,gstatic.com,0.80,Let's Encrypt,com,False,False,2.95,2209,1.5
+1749253257.879,marbsproject.com,obsproject.com,0.87,Google Trust Services,com,False,False,3.5,364,2.75
+1749253258.054,bitpaycheck.com,bitpay.com,0.80,Let's Encrypt,com,False,True,3.59,484,5.5
+1749253258.099,tahein.com,tunein.com,0.80,Let's Encrypt,com,False,False,3.32,3677,2.5
+1749253258.473,casaeva.com,canva.com,0.80,Let's Encrypt,com,False,False,2.85,830,1.5
+1749253258.774,altesource.com,salesforce.com,0.86,"GoDaddy.com, Inc.",com,False,False,3.38,5878,1.75
+1749253258.917,amiv.com,mtv.com,0.80,Google Trust Services,com,False,False,2.75,8573,0.5
+1749253258.922,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253258.986,escort-collective.com,cargocollective.com,0.80,Let's Encrypt,com,False,False,3.37,62,3.5
+1749253258.989,adrentures.com,accenture.com,0.81,Let's Encrypt,com,False,False,3.52,136,4.5
+1749253258.991,steelcomet.com,steemit.com,0.80,Let's Encrypt,com,False,False,2.9,3196,1.5
+1749253259.007,satoribyme.com,storify.com,0.80,Let's Encrypt,com,False,False,3.52,118,4.5
+1749253259.166,nluc.org,gnu.org,0.80,Let's Encrypt,org,False,False,3.0,9407,1.5
+1749253259.182,cpanel.wikipeeia.org,pl.wikipedia.org,0.83,Let's Encrypt,org,False,False,3.55,1113,3.5
+1749253259.185,dmarie.com,vmware.com,0.80,Let's Encrypt,com,False,False,3.12,10405,2.5
+1749253259.251,evasale.com,shareasale.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.1,2927,1.5
+1749253259.434,ponydom.com,pond5.com,0.80,Let's Encrypt,com,False,False,2.85,9111,1.5
+1749253259.436,oxnu.com,vox.com,0.80,Let's Encrypt,com,False,False,2.75,7303,1.5
+1749253259.707,baox.com,vox.com,0.80,Let's Encrypt,com,False,False,2.75,7523,1.5
+1749253259.823,responzy.com,espn.com,0.80,Let's Encrypt,com,False,False,3.42,3667,3.5
+1749253259.826,addut.com,addthis.com,0.80,Let's Encrypt,com,False,False,2.95,0,4.5
+1749253259.873,theravea.com,strava.com,0.82,Let's Encrypt,com,False,False,3.25,1200,2.5
+1749253259.913,dagyhye.com,adage.com,0.80,Let's Encrypt,com,False,False,3.28,60,3.5
+1749253260.106,login.microsoftonline.comxfinity.com,login.microsoftonline.com,0.82,Let's Encrypt,com,False,True,3.63,4565,5.5
+1749253260.431,shopibr.com,shopify.com,0.82,Let's Encrypt,com,False,False,3.28,60,3.5
+1749253260.548,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253260.55,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253260.554,wdsusa.com,disqus.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.12,6948,1.5
+1749253260.65,lannetwork.com,jamanetwork.com,0.83,Let's Encrypt,com,False,False,3.52,10032,3.5
+1749253260.776,telegrm.co,telegram.org,0.82,Let's Encrypt,co,False,False,3.12,0,5.5
+1749253260.984,risklean.com,ikea.com,0.80,Let's Encrypt,com,False,False,3.58,1263,3.5
+1749253260.987,idigitalmeta.com,digitalocean.com,0.81,Let's Encrypt,com,False,False,3.33,1108,2.5
+1749253261.058,yvmarine.com,vmware.com,0.82,Let's Encrypt,com,False,False,3.42,7239,3.5
+1749253261.149,advigle.com,adage.com,0.80,Let's Encrypt,com,False,False,3.46,212,3.5
+1749253261.237,sandera.com,pandora.com,0.82,Let's Encrypt,com,False,False,3.28,8992,2.5
+1749253279.987,oole.co,google.com,0.82,Let's Encrypt,co,False,False,2.13,2,4.5
+1749253279.987,tennid.com,ted.com,0.82,Let's Encrypt,com,False,False,3.12,148,3.5
+1749253279.993,brelift.com,drift.com,0.80,Google Trust Services,com,False,False,3.46,2772,2.5
+1749253280.304,danceurstar.com,ancestry.com,0.81,Let's Encrypt,com,False,False,3.51,965,3.5
+1749253280.451,sendhype.com,sendspace.com,0.80,Let's Encrypt,com,False,False,3.42,2867,3.5
+1749253280.703,gzpnet.com,zdnet.com,0.84,"CLOUDFLARE, INC.",com,False,False,3.32,1,4.5
+1749253280.848,blog.greendust.com,blog.feedspot.com,0.80,Let's Encrypt,com,False,False,3.73,6209,4.5
+1749253280.86,varieer.com,variety.com,0.82,Google Trust Services,com,False,False,3.1,105,2.5
+1749253281.103,britbury.com,breitbart.com,0.80,Let's Encrypt,com,False,False,3.25,458,2.5
+1749253281.112,ahxpr.com,hp.com,0.80,"CLOUDFLARE, INC.",com,False,False,3.17,138,2.5
+1749253281.782,cinestox.com,cnet.com,0.80,Let's Encrypt,com,False,False,3.25,1535,2.5
+1749253282.019,statronic.com,gstatic.com,0.83,Let's Encrypt,com,False,False,3.24,1872,2.5
+1749253284.442,hoerath.com,opera.com,0.80,Let's Encrypt,com,False,False,3.1,7742,2.5
+1749253284.445,deepaba.com,deepl.com,0.80,Google Trust Services,com,False,False,3.1,119,2.5
+1749253284.482,tbmkj.com,bmj.com,0.88,Google Trust Services,com,False,False,2.95,135,1.75
+1749253284.526,ochrespace.com,createspace.com,0.83,Let's Encrypt,com,False,False,3.18,1659,2.5
+1749253284.649,picaroworld.com,pcworld.com,0.85,Google Trust Services,com,False,False,3.32,5406,1.5
+1749253284.676,spur.org,npr.org,0.80,Let's Encrypt,org,False,False,2.75,10607,1.5
+1749253284.684,zaasu.com,asus.com,0.82,"GoDaddy.com, Inc.",com,False,False,2.95,0,3.5
+1749253284.795,asva.com,canva.com,0.82,Let's Encrypt,com,False,False,2.75,2589,1.5
+1749253284.846,assane.com,dashlane.com,0.82,Let's Encrypt,com,False,False,2.92,8955,1.5
+1749253284.911,dancella.com,cell.com,0.80,Let's Encrypt,com,False,False,3.08,2043,1.5
+1749253284.978,chvbc.com,cnbc.com,0.82,Let's Encrypt,com,False,False,2.64,5442,1.5
+1749253284.98,afyt.com,ft.com,0.86,Let's Encrypt,com,False,False,3.0,5823,1.75
+1749253285.073,afyt.com,ft.com,0.86,Let's Encrypt,com,False,False,3.0,5823,1.75
+1749253285.173,nogovo.com,lenovo.com,0.80,Let's Encrypt,com,False,False,2.52,3529,1.5
+1749253285.346,leaonline.com,eonline.com,0.92,Google Trust Services,com,False,False,3.09,8396,1.0
+1749253291.773,knuc.com,inc.com,0.80,Let's Encrypt,com,False,False,2.75,4612,1.5
+1749253291.832,oprixo.com,gopro.com,0.84,Let's Encrypt,com,False,False,2.85,166,2.5
+1749253292.028,msfave.com,sfgate.com,0.80,Let's Encrypt,com,False,False,3.12,735,2.5
+1749253292.03,theverveph.com,theverge.com,0.85,Google Trust Services,com,False,False,3.18,339,1.5
+1749253292.031,fent.com,ft.com,0.86,Let's Encrypt,com,False,False,3.0,9131,1.75
+1749253292.031,acpe.com,apple.com,0.82,Let's Encrypt,com,False,False,2.75,8991,1.5
+1749253292.134,bbtcl.com,bbc.com,0.88,Let's Encrypt,com,False,False,2.73,10296,1.75
+1749253292.22,cast.netflix.com,netflix.com,0.81,DigiCert Inc,com,False,False,3.62,10069,2.5
+1749253292.22,fast.com,ft.com,0.86,DigiCert Inc,com,False,False,3.0,11256,0.75
+1749253292.282,bezaw.com,ea.com,0.80,Let's Encrypt,com,False,False,3.17,1454,2.5
+1749253292.482,danceurstar.com,ancestry.com,0.81,Let's Encrypt,com,False,False,3.51,965,3.5
+1749253292.587,agentdrupal.org,drupal.org,0.80,Google Trust Services,org,False,False,3.51,78,3.5
+1749253292.9,aubsy.com,asus.com,0.82,Let's Encrypt,com,False,False,3.17,505,2.5
+1749253292.905,startiga.com,statista.com,0.83,Let's Encrypt,com,False,False,3.25,1849,2.5
+1749253292.945,fin-eli.com,intel.com,0.80,Let's Encrypt,com,False,False,3.28,1244,2.5
+1749253292.952,westflix.com,netflix.com,0.87,Let's Encrypt,com,False,False,3.58,3524,3.75
+1749253307.934,spiffya.com,shopify.com,0.82,Let's Encrypt,com,False,False,3.28,3525,2.5
+1749253308.13,astravant.com,strava.com,0.87,Let's Encrypt,com,False,False,3.18,2098,2.75
+1749253308.287,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253308.363,cbeai.com,ea.com,0.80,Let's Encrypt,com,False,False,2.95,1256,1.5
+1749253308.446,altesource.com,salesforce.com,0.86,"GoDaddy.com, Inc.",com,False,False,3.38,5878,1.75
+1749253308.471,signaturebeat.com,venturebeat.com,0.81,Let's Encrypt,com,False,False,3.73,1532,4.5
+1749253308.549,fitlinked.co,it.linkedin.com,0.81,Let's Encrypt,co,False,False,3.42,1826,3.5
+1749253308.559,monstercrop.com,monster.com,0.85,Let's Encrypt,com,False,False,3.19,286,2.5
+1749253308.562,gwjee.com,geek.com,0.82,Google Trust Services,com,False,False,2.95,138,1.5
+1749253376.563,support.fapsult.com,support.apple.com,0.83,Let's Encrypt,com,False,True,3.47,3033,5.5
+1749253376.564,globaledunews.com,globalnews.ca,0.80,Google Trust Services,com,False,False,3.73,59,5.5
+1749253376.727,radioly.com,rdio.com,0.84,Let's Encrypt,com,False,False,3.28,4486,2.5
+1749253377.616,joenews.com,foxnews.com,0.82,Let's Encrypt,com,False,False,3.1,7837,2.5
+1749253377.618,groomnail.com,gmail.com,0.82,Let's Encrypt,com,False,False,3.18,769,2.5
+1749253377.771,xcwed.com,xkcd.com,0.82,"CLOUDFLARE, INC.",com,False,False,2.95,1,3.5
+1749253377.809,baelymusic.com,allmusic.com,0.85,Let's Encrypt,com,False,False,3.52,747,3.5
+1749253377.826,fetao.com,ft.com,0.80,Let's Encrypt,com,False,False,2.95,4960,1.5
+1749253377.886,cifaworld.com,pcworld.com,0.83,Google Trust Services,com,False,False,3.39,562,1.5
+1749253378.1,ardlo.com,rdio.com,0.82,Let's Encrypt,com,False,False,2.95,1525,1.5
+1749253378.192,stats.tzeya.com,statista.com,0.81,Let's Encrypt,com,False,False,3.19,737,2.5
+1749253378.464,nnsbfc.com,nbc.com,0.82,"CLOUDFLARE, INC.",com,False,False,2.92,1407,0.5
+1749253378.597,srtbin.com,pastebin.com,0.82,Let's Encrypt,com,False,False,3.32,487,2.5
+1749253378.899,skatistapg.com,statista.com,0.85,Let's Encrypt,com,False,False,3.38,24,4.5
+1749253379.117,atlanticfas.com,theatlantic.com,0.80,Let's Encrypt,com,False,False,3.32,491,2.5
+1749253379.125,navigin.com,nginx.com,0.80,Let's Encrypt,com,False,False,3.1,3520,2.5
+1749253379.445,hidpi.com,hp.com,0.80,Let's Encrypt,com,False,False,2.95,5216,1.5
+1749253379.461,zenovy.com,lenovo.com,0.80,Let's Encrypt,com,False,False,3.12,3419,2.5
+1749253379.587,yandexgpu.ru,yandex.ru,0.86,Google Trust Services,ru,False,False,3.42,240,2.75
+1749253379.719,ddday.com,godaddy.com,0.80,Let's Encrypt,com,False,False,2.64,7080,1.5
+1749253379.724,kuchhealthy.com,health.com,0.80,Let's Encrypt,com,False,False,3.46,892,3.5
+1749253379.726,synopso.com,snopes.com,0.86,Let's Encrypt,com,False,False,2.85,1328,1.75
+1749253379.745,pipy.com,giphy.com,0.82,Let's Encrypt,com,False,False,2.75,8500,1.5
+1749253379.747,ouvox.com,vox.com,0.88,Let's Encrypt,com,False,False,2.64,1818,1.75
+1749253379.912,ttgawards.com,starwars.com,0.80,Google Trust Services,com,False,False,3.39,6332,1.5
+1749253379.965,mlbrry.com,mlb.com,0.82,Let's Encrypt,com,False,False,2.92,0,4.5
+1749253379.971,8xox8.com,xbox.com,0.82,Let's Encrypt,com,False,False,2.5,63,2.5
+1749253381.433,zixla.com,mozilla.com,0.80,Let's Encrypt,com,False,False,3.17,2748,2.5
+1749253381.436,godocupro.com,gopro.com,0.82,Google Trust Services,com,False,False,2.93,236,0.5
+1749253381.447,hzhear.com,iheart.com,0.80,Let's Encrypt,com,False,False,3.12,4683,2.5
+1749253381.45,equipatron.com,patreon.com,0.80,Google Trust Services,com,False,False,3.66,5751,2.5
+1749253381.453,mixozo.com,moz.com,0.82,Let's Encrypt,com,False,False,2.65,3396,1.5
+1749253381.453,bitelet.com,bitly.com,0.80,Let's Encrypt,com,False,False,3.1,1410,2.5
+1749253381.712,equipatron.com,patreon.com,0.80,Google Trust Services,com,False,False,3.66,5751,2.5
+1749253381.809,starterr.com,kickstarter.com,0.81,Let's Encrypt,com,False,False,3.02,4480,1.5
+1749253382.009,theveraux.com,theverge.com,0.80,Google Trust Services,com,False,False,3.55,124,3.5
+1749253382.288,maxxhosting.com,a2hosting.com,0.86,Let's Encrypt,com,False,False,3.51,1635,3.75
+1749253382.292,cgmpworld.com,pcworld.com,0.83,Let's Encrypt,com,False,False,3.24,1929,2.5
+1749253382.518,kmcabs.com,cbs.com,0.82,Let's Encrypt,com,False,False,2.92,5862,1.5
+1749253382.527,stratain.com,strava.com,0.82,Let's Encrypt,com,False,False,3.25,1196,2.5
+1749253382.652,ddday.com,godaddy.com,0.80,Let's Encrypt,com,False,False,2.64,7080,1.5
+1749253382.834,romozo.com,moz.com,0.82,Let's Encrypt,com,False,False,2.32,3273,1.5
+1749253382.844,synopso.com,snopes.com,0.86,Let's Encrypt,com,False,False,2.85,1328,1.75
+1749253382.844,oveki.com,vk.com,0.80,Let's Encrypt,com,False,False,2.95,3217,1.5
+1749253383.056,redblvd.com,redbull.com,0.82,Let's Encrypt,com,False,False,3.28,1589,2.5
+1749253383.074,support.kilser.com,support.apple.com,0.80,Let's Encrypt,com,False,True,3.61,3110,5.5
+1749253383.077,its-smi.com,git-scm.com,0.82,Let's Encrypt,com,False,False,2.91,501,1.5
+1749253383.644,hidpi.com,hp.com,0.80,Let's Encrypt,com,False,False,2.95,5216,1.5
+1749253383.65,dan.blognovin.com,bloglovin.com,0.80,Google Trust Services,com,False,False,3.41,1196,2.5
+1749253383.924,dockrus.com,docker.com,0.86,Let's Encrypt,com,False,False,3.1,90,3.75
+1749253383.927,inbert.com,iheart.com,0.80,Let's Encrypt,com,False,False,3.32,789,2.5
+1749253390.431,vulted.com,ted.com,0.82,Let's Encrypt,com,False,False,3.32,3856,2.5
+1749253390.458,verdiz.co,verizon.com,0.80,Google Trust Services,co,False,False,3.17,376,1.5
+1749253390.792,bopply.com,bol.com,0.82,Let's Encrypt,com,False,False,2.92,3505,1.5
+1749253390.799,threevertex.com,theverge.com,0.81,Let's Encrypt,com,False,False,3.11,899,2.5
+1749253390.8,c.bgab.com,cdbaby.com,0.80,Let's Encrypt,com,False,False,2.72,8063,1.5
+1749253390.947,wireva.com,wired.com,0.84,Let's Encrypt,com,False,False,3.32,2150,2.5
+1749253390.947,nwroots.com,webroot.com,0.82,Let's Encrypt,com,False,False,3.03,2822,1.5
+1749253391.083,*.karma-network.com,jamanetwork.com,0.82,Let's Encrypt,com,False,False,3.62,5879,3.5
+1749253391.101,preterp.com,reuters.com,0.82,Let's Encrypt,com,False,False,2.91,978,1.5
+1749253391.102,minte.com,intel.com,0.89,Let's Encrypt,com,False,False,2.95,8449,1.75
+1749253391.106,volure.com,vogue.com,0.84,Let's Encrypt,com,False,False,3.12,5035,2.5
+1749253391.284,kmonstar.com,monster.com,0.87,Google Trust Services,com,False,False,3.25,1138,1.75
+1749253391.389,joenews.com,foxnews.com,0.82,Let's Encrypt,com,False,False,3.1,7837,2.5
+1749253391.666,autofunds.com,autodesk.com,0.80,Let's Encrypt,com,False,False,3.39,7817,2.5
+1749253391.761,senaba.com,nba.com,0.82,Let's Encrypt,com,False,False,3.12,1097,2.5
+1749253391.797,matroni.com,patreon.com,0.82,Let's Encrypt,com,False,False,3.1,1255,2.5
+1749253395.762,filain.com,flaticon.com,0.82,Let's Encrypt,com,False,False,3.12,5188,2.5
+1749253395.766,mecanil.com,gmail.com,0.80,Let's Encrypt,com,False,False,3.1,202,2.5
+1749253395.769,gardnercfo.com,gartner.com,0.80,Let's Encrypt,com,False,False,3.38,1865,2.5
+1749253395.815,versiondos.com,verizon.com,0.80,Let's Encrypt,com,False,False,3.32,1988,2.5
+1749253396.082,mytwire.com,wired.com,0.80,Let's Encrypt,com,False,False,3.28,5359,2.5
+1749253396.101,lespiton.com,espn.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.42,1575,2.5
+1749253396.351,adeacoffee.com,buymeacoffee.com,0.80,Google Trust Services,com,False,False,2.9,2658,0.5
+1749253396.615,easyyums.com,asus.com,0.80,Google Trust Services,com,False,False,3.08,197,0.5
+1749253396.716,oiandoi.com,android.com,0.82,"CLOUDFLARE, INC.",com,False,False,2.85,5,3.5
+1749253396.716,yatostore.com,appstore.com,0.80,Let's Encrypt,com,False,False,3.18,415,2.5
+1749253396.79,granpear.com,ranker.com,0.82,Let's Encrypt,com,False,False,3.25,303,2.5
+1749253396.861,riqor.com,rdio.com,0.82,Let's Encrypt,com,False,False,2.73,2593,1.5
+1749253396.874,kiberhealth.com,health.com,0.80,Let's Encrypt,com,False,False,3.64,2459,3.5
+1749253396.96,hollywoodreporter.nemetek.com,hollywoodreporter.com,0.84,Let's Encrypt,com,False,False,3.62,3961,3.5
+1749253396.969,hopetreefoundation.org,poetryfoundation.org,0.86,Let's Encrypt,org,False,False,3.61,2828,3.75
+1749253396.969,seteri.com,stripe.com,0.80,Let's Encrypt,com,False,False,3.12,974,2.5
+1749253397.022,npcloud.com,soundcloud.com,0.80,Google Trust Services,com,False,False,3.1,5594,1.5
+1749253397.124,narqe.com,nature.com,0.84,Let's Encrypt,com,False,False,3.17,2426,2.5
+1749253397.131,dhlgd.com,lg.com,0.80,Sectigo Limited,com,False,False,2.95,2,3.5
+1749253398.136,pvxpartner.com,gartner.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.52,365,2.5
+1749253398.146,lespiton.com,espn.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.42,1575,2.5
+1749253398.522,stats.zuidstad.com,statista.com,0.80,Let's Encrypt,com,False,False,3.31,3432,2.5
+1749253398.629,vqtv.com,mtv.com,0.80,Let's Encrypt,com,False,False,2.75,8060,1.5
+1749253398.726,granpear.com,ranker.com,0.82,Let's Encrypt,com,False,False,3.25,303,2.5
+1749253398.785,yueea.com,ea.com,0.80,Let's Encrypt,com,False,False,2.95,150,2.5
+1749253398.872,googlesvip9.com,google.com,0.80,Let's Encrypt,com,False,False,3.46,74,4.5
+1749253398.876,vizita.com,vizio.com,0.84,Let's Encrypt,com,False,False,3.12,,2.5
+1749253398.879,lycovo.com,lenovo.com,0.80,Let's Encrypt,com,False,False,2.65,3046,1.5
+1749253399.34,dashranger.com,dashlane.com,0.85,Let's Encrypt,com,False,False,3.52,731,3.5
+1749253407.525,ticktomas.com,ticketmaster.com,0.83,Google Trust Services,com,False,False,3.09,3327,0.5
+1749253407.775,gropar.com,gopro.com,0.84,Let's Encrypt,com,False,False,2.92,3824,1.5
+1749253571.427,s3.eu-west-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.96,Amazon,com,False,False,3.77,7232,4.0
+1749253571.427,*.s3-control.eu-west-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.84,Amazon,com,False,False,4.0,7232,3.5
+1749253571.427,*.s3.eu-west-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.93,Amazon,com,False,False,3.82,7232,4.0
+1749253571.429,s3.ap-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.66,7232,2.5
+1749253571.509,*.eu-west-1.es.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.73,7232,3.75
+1749253571.545,novyxo.com,lenovo.com,0.80,Let's Encrypt,com,False,False,2.85,131,2.5
+1749253571.601,nominest.com,economist.com,0.80,Let's Encrypt,com,False,False,3.08,1294,1.5
+1749253571.651,tamazy.com,amazon.com,0.80,Let's Encrypt,com,False,False,2.92,372,1.5
+1749253571.8,hapikostore.com,appstore.com,0.81,Let's Encrypt,com,False,False,3.59,269,3.5
+1749253571.839,booking4.com,booking.com,0.96,"GoDaddy.com, Inc.",com,False,False,3.19,5480,2.0
+1749253571.867,jbferg.com,buffer.com,0.80,Let's Encrypt,com,False,False,3.32,5889,2.5
+1749253572.019,poppear.com,opera.com,0.80,Let's Encrypt,com,False,False,2.85,304,1.5
+1749253572.148,minutestream.com,livestream.com,0.80,Let's Encrypt,com,False,False,3.45,1807,3.5
+1749253572.251,gitlab.456.com,gitlab.com,0.83,ZeroSSL,com,False,False,3.66,10599,3.5
+1749253572.262,jincwg.com,inc.com,0.82,Google Trust Services,com,False,False,3.12,2650,1.5
+1749253572.471,agritecha.com,logitech.com,0.80,Google Trust Services,com,False,False,3.39,708,1.5
+1749253572.6,gabr.com,abc.com,0.80,Let's Encrypt,com,False,False,3.0,9243,1.5
+1749253572.9,lgdky.com,lg.com,0.80,Google Trust Services,com,False,False,3.17,135,2.5
+1749253573.141,flickfolder.com,flickr.com,0.80,Let's Encrypt,com,False,False,3.37,1275,2.5
+1749253573.145,aducer.com,docker.com,0.80,Let's Encrypt,com,False,False,3.12,2931,2.5
+1749253573.263,gitlab.gmq.com,gitlab.com,0.83,Let's Encrypt,com,False,False,3.38,8058,2.5
+1749253573.266,zinzic.com,inc.com,0.82,Let's Encrypt,com,False,False,2.72,2000,1.5
+1749253573.498,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253573.498,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253573.499,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253573.575,bhritya.com,bitly.com,0.80,Google Trust Services,com,False,False,3.46,181,2.5
+1749253573.617,vqjmz.com,qz.com,0.80,Let's Encrypt,com,False,False,2.95,367,1.5
+1749253573.618,fr.lionyen.com,fr.linkedin.com,0.83,Let's Encrypt,com,False,False,3.38,1479,2.5
+1749253573.668,hnbcgl.com,nbc.com,0.82,Google Trust Services,com,False,False,3.12,3753,1.5
+1749253573.816,ovvoo.com,avvo.com,0.82,Let's Encrypt,com,False,False,2.06,1325,1.5
+1749253573.931,jbferg.com,buffer.com,0.80,Let's Encrypt,com,False,False,3.32,5889,2.5
+1749253573.95,toolsgolf.com,tools.google.com,0.83,Let's Encrypt,com,False,False,2.93,598,1.5
+1749253573.995,pixtela.com,intel.com,0.80,Let's Encrypt,com,False,False,3.46,1362,3.5
+1749253573.995,qyhtz.com,qz.com,0.80,Let's Encrypt,com,False,False,3.17,3917,2.5
+1749253574.058,redizo.com,reddit.com,0.80,Let's Encrypt,com,False,False,3.12,2752,2.5
+1749253574.087,aturity.com,variety.com,0.82,Let's Encrypt,com,False,False,3.28,779,2.5
+1749253574.123,famn.com,amzn.com,0.88,Let's Encrypt,com,False,False,2.75,9126,1.75
+1749253574.124,mayatable.com,mashable.com,0.80,Let's Encrypt,com,False,False,3.18,5302,2.5
+1749253574.124,maxxino.com,axios.com,0.80,Let's Encrypt,com,False,False,2.91,1568,1.5
+1749253574.206,lmfti.com,ft.com,0.80,Let's Encrypt,com,False,False,2.95,1904,1.5
+1749253574.254,falira.com,flickr.com,0.80,Let's Encrypt,com,False,False,3.12,1309,2.5
+1749253574.262,tiertotier.com,twitter.com,0.80,Let's Encrypt,com,False,False,2.9,3219,1.5
+1749253574.269,26na.com,nba.com,0.80,Google Trust Services,com,False,False,3.0,3958,0.5
+1749253574.329,cadouble.com,adobe.com,0.86,"CLOUDFLARE, INC.",com,False,False,3.25,2,4.75
+1749253574.82,retrous.com,reuters.com,0.82,Let's Encrypt,com,False,False,3.1,1569,2.5
+1749253574.826,medimaid.com,medium.com,0.82,Let's Encrypt,com,False,False,2.86,3096,1.5
+1749253574.827,applehour.com,apple.com,0.82,Let's Encrypt,com,False,False,3.39,1622,2.5
+1749253575.361,cvspice.com,vice.com,0.84,Google Trust Services,com,False,False,3.03,1229,0.5
+1749253575.541,feba.com,fb.com,0.86,Let's Encrypt,com,False,False,3.0,4325,1.75
+1749253575.918,comnet1.com,cnet.com,0.84,"GoDaddy.com, Inc.",com,False,False,2.91,1066,0.5
+1749253575.957,imperva.com,opera.com,0.80,GlobalSign nv-sa,com,False,False,3.28,7834,1.5
+1749253582.565,dihme.com,time.com,0.82,Let's Encrypt,com,False,False,2.95,2514,1.5
+1749253582.652,trannsfer.com,wetransfer.com,0.89,Let's Encrypt,com,False,False,3.39,3175,2.75
+1749253582.653,prepacker.com,spreaker.com,0.88,Let's Encrypt,com,False,False,3.09,1479,1.75
+1749253582.654,portol.officwe.com,support.office.com,0.83,Let's Encrypt,com,False,False,3.39,1966,2.5
+1749253582.728,timehive.com,time.com,0.80,Let's Encrypt,com,False,False,3.08,4172,1.5
+1749253582.929,sjrtd.com,rt.com,0.80,DigiCert Inc,com,False,False,3.17,8238,1.5
+1749253583.091,tapplum.com,apple.com,0.80,Let's Encrypt,com,False,False,3.1,2641,2.5
+1749253583.095,ramhios.com,axios.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.1,62,2.5
+1749253585.223,noroadscollective.com,cargocollective.com,0.80,Google Trust Services,com,False,False,3.59,0,5.5
+1749253585.289,echoapsey.com,chase.com,0.82,Let's Encrypt,com,False,False,3.24,490,2.5
+1749253585.474,rae.githubuserscontent.com,raw.githubusercontent.com,0.94,Let's Encrypt,com,False,True,3.8,1466,7.0
+1749253585.479,fortuneclass.com,fortune.com,0.81,Let's Encrypt,com,False,False,3.62,2382,3.5
+1749253585.513,3p8c.com,pwc.com,0.80,ZeroSSL,com,False,False,2.75,784,1.5
+1749253585.561,nlmf.com,nfl.com,0.80,Let's Encrypt,com,False,False,2.75,8434,1.5
+1749253585.564,iranet.com,ranker.com,0.80,Let's Encrypt,com,False,False,3.32,9219,2.5
+1749253585.606,cast.netflix.com,netflix.com,0.81,DigiCert Inc,com,False,False,3.62,10069,2.5
+1749253585.606,fast.com,ft.com,0.86,DigiCert Inc,com,False,False,3.0,11256,0.75
+1749253585.854,ovanex.com,yandex.com,0.80,Let's Encrypt,com,False,False,3.12,2326,2.5
+1749253585.906,spshaco.com,space.com,0.80,Let's Encrypt,com,False,False,2.91,1398,1.5
+1749253585.929,jixa.com,wix.com,0.80,Let's Encrypt,com,False,False,3.0,8098,1.5
+1749253585.996,marbsproject.com,obsproject.com,0.87,Google Trust Services,com,False,False,3.5,364,2.75
+1749253586.12,ozoll.com,mozilla.com,0.80,Let's Encrypt,com,False,False,2.42,808,1.5
+1749253586.387,vivicore.com,vice.com,0.80,Let's Encrypt,com,False,False,2.92,4782,1.5
+1749253586.396,timatree.com,time.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.08,1858,0.5
+1749253586.509,fozbet.com,forbes.com,0.80,Google Trust Services,com,False,False,3.12,2234,1.5
+1749253586.588,atito.com,animoto.com,0.80,Let's Encrypt,com,False,False,2.73,487,1.5
+1749253586.607,jixa.com,wix.com,0.80,Let's Encrypt,com,False,False,3.0,8098,1.5
+1749253608.283,ww1.eventeim.de,eventim.de,0.80,Let's Encrypt,de,False,False,3.11,,2.5
+1749253608.286,riulo.com,rdio.com,0.82,Let's Encrypt,com,False,False,2.95,3114,1.5
+1749253608.363,beai.com,nba.com,0.80,Let's Encrypt,com,False,False,3.0,10454,1.5
+1749253608.535,oactli.com,oracle.com,0.80,Let's Encrypt,com,False,False,2.92,681,1.5
+1749253608.651,halfweek.com,adweek.com,0.82,Let's Encrypt,com,False,False,3.42,731,3.5
+1749253608.774,xsneakers.com,spreaker.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.39,5551,1.5
+1749253608.828,navyware.com,vmware.com,0.82,Let's Encrypt,com,False,False,3.42,7458,3.5
+1749253608.83,desktop.juicytubes.com,desktop.github.com,0.80,Let's Encrypt,com,False,False,3.82,7693,4.5
+1749253633.017,boxlulu.com,lulu.com,0.84,"GoDaddy.com, Inc.",com,False,False,2.91,1944,0.5
+1749253633.227,home.greenpeaceil.org,greenpeace.org,0.80,Let's Encrypt,org,False,False,3.46,1456,3.5
+1749253633.375,marcosn.com.br,amazon.com.br,0.81,Let's Encrypt,br,False,False,3.09,94,2.5
+1749253633.561,bitpenta.com,bitpay.com,0.82,ZeroSSL,com,False,False,3.42,2769,3.5
+1749253633.563,wordpressfans.com,wordpress.com,0.87,Let's Encrypt,com,False,False,3.57,365,3.75
+1749253633.734,ouzzy.com,houzz.com,0.89,Let's Encrypt,com,False,False,2.73,2669,1.75
+1749253633.736,gitlab.cetr.com,gitlab.com,0.80,Let's Encrypt,com,False,False,3.51,10489,3.5
+1749253633.741,volmyx.com,vox.com,0.82,Google Trust Services,com,False,False,2.92,236,0.5
+1749253633.975,opetimes.com,time.com,0.80,Let's Encrypt,com,False,False,3.08,0,4.5
+1749253633.987,gogalen.com,google.com,0.86,"CLOUDFLARE, INC.",com,False,False,3.1,253,1.75
+1749253673.835,bolemm.com,bol.com,0.82,Let's Encrypt,com,False,False,2.65,2282,1.5
+1749253673.914,breaddiet.com,reddit.com,0.87,Let's Encrypt,com,False,False,3.39,7270,2.75
+1749253673.929,volixo.com,vox.com,0.82,Let's Encrypt,com,False,False,2.85,3060,1.5
+1749253674.07,maps.goo.co.in,maps.google.co.nz,0.84,DigiCert Inc,in,False,False,3.13,724,1.5
+1749253674.131,inocte.com,inc.com,0.82,Let's Encrypt,com,False,False,2.92,195,1.5
+1749253674.173,nngw.com,cnn.com,0.80,Let's Encrypt,com,False,False,2.75,5390,1.5
+1749253674.253,inuro.com,tinyurl.com,0.80,Let's Encrypt,com,False,False,2.95,9207,1.5
+1749253674.425,montacle.com,oracle.com,0.82,Let's Encrypt,com,False,False,3.08,1274,1.5
+1749253674.429,rankmarker.com,ranker.com,0.83,Let's Encrypt,com,False,False,3.04,1727,1.5
+1749253674.465,agennda.com,agoda.com,0.80,Let's Encrypt,com,False,False,3.1,3318,2.5
+1749253674.558,utesa.com,reuters.com,0.80,ZeroSSL,com,False,False,3.17,8989,2.5
+1749253674.746,boqix.com,xbox.com,0.82,Let's Encrypt,com,False,False,2.95,3261,1.5
+1749253674.756,figata.com,sfgate.com,0.80,Let's Encrypt,com,False,False,3.12,8216,2.5
+1749253674.76,mobcrue.com,imore.com,0.80,Let's Encrypt,com,False,False,2.91,581,1.5
+1749253674.895,sewsauce.com,sendspace.com,0.80,Google Trust Services,com,False,False,3.08,2,3.5
+1749253674.939,tagista.com,statista.com,0.87,Let's Encrypt,com,False,False,3.1,1464,2.75
+1749253674.973,luxante.com,slate.com,0.80,Let's Encrypt,com,False,False,3.46,2844,3.5
+1749253674.986,pwcold.com,pcworld.com,0.86,Google Trust Services,com,False,False,2.92,4452,0.75
+1749253675.018,affilixpress.com,aliexpress.com,0.87,Let's Encrypt,com,False,False,3.62,126,4.75
+1749253675.019,riksa.com,ikea.com,0.82,Let's Encrypt,com,False,False,3.17,7464,2.5
+1749253675.144,inuro.com,tinyurl.com,0.80,Let's Encrypt,com,False,False,2.95,9207,1.5
+1749253675.149,rvfk.com,vk.com,0.86,Let's Encrypt,com,False,False,3.0,5572,1.75
+1749253675.151,adweave.com,adage.com,0.80,Let's Encrypt,com,False,False,3.1,1667,2.5
+1749253675.241,zirce.com,vice.com,0.82,Let's Encrypt,com,False,False,2.95,690,1.5
+1749253675.347,tmnoe.com,time.com,0.82,Let's Encrypt,com,False,False,2.73,354,1.5
+1749253675.567,sharedup.com,squareup.com,0.83,Let's Encrypt,com,False,False,3.58,2922,3.5
+1749253675.607,qzens.com,qz.com,0.80,Let's Encrypt,com,False,False,3.17,5516,2.5
+1749253675.61,natuzo.com,nature.com,0.80,Let's Encrypt,com,False,False,3.12,2148,2.5
+1749253675.618,realproject.com,codeproject.com,0.80,Let's Encrypt,com,False,False,3.37,5658,2.5
+1749253676.042,ars.techtonicstz.com,arstechnica.com,0.80,Google Trust Services,com,False,False,3.55,320,2.5
+1749253676.046,revayo.com,envato.com,0.80,Let's Encrypt,com,False,False,3.12,361,2.5
+1749253676.058,techblogger.com,blogger.com,0.85,Let's Encrypt,com,False,False,3.37,8458,2.5
+1749253676.074,sharedup.com,squareup.com,0.83,Let's Encrypt,com,False,False,3.58,2922,3.5
+1749253676.363,wintered.com,pinterest.com,0.80,Let's Encrypt,com,False,False,3.42,7026,3.5
+1749253676.379,hostinghelp.com,hostinger.com,0.86,Google Trust Services,com,False,False,3.64,8800,2.75
+1749253676.379,*.hostinghelp.com,hostinger.com,0.80,Google Trust Services,com,False,False,3.73,8800,3.5
+1749253676.382,*.signup.microsoft.com,msdn.microsoft.com,0.80,Microsoft Corporation,com,False,False,3.66,12454,2.5
+1749253676.382,signup.microsoft.com,support.microsoft.com,0.83,Microsoft Corporation,com,False,False,3.58,12454,2.5
+1749253676.403,oveki.com,vk.com,0.80,Let's Encrypt,com,False,False,2.95,3217,1.5
+1749253676.499,boxlulu.com,lulu.com,0.84,"GoDaddy.com, Inc.",com,False,False,2.91,1944,0.5
+1749253676.807,realproject.com,codeproject.com,0.80,Let's Encrypt,com,False,False,3.37,5658,2.5
+1749253676.815,tellt.com,trello.com,0.84,Let's Encrypt,com,False,False,2.73,6734,1.5
+1749253676.844,papsit.com,popsci.com,0.80,Let's Encrypt,com,False,False,3.12,6640,2.5
+1749253676.933,test.lhza.com,tesla.com,0.82,Let's Encrypt,com,False,False,3.39,5607,2.5
+1749253676.939,atarea.com,nature.com,0.80,Let's Encrypt,com,False,False,2.85,634,1.5
+1749253676.94,inroco.com,inc.com,0.82,Let's Encrypt,com,False,False,2.65,1010,1.5
+1749253677.024,tg.my-neilpatel.com,neilpatel.com,0.81,DigiCert Inc,com,False,False,3.72,395,3.5
+1749253677.046,voghel.com,vogue.com,0.84,Google Trust Services,com,False,False,3.12,7114,1.5
+1749253677.051,shopzia.com,shopify.com,0.82,Let's Encrypt,com,False,False,3.28,5804,2.5
+1749253677.128,ozbor.com,kobo.com,0.82,Let's Encrypt,com,False,False,2.64,1743,1.5
+1749253688.643,yevep.com,yelp.com,0.82,Let's Encrypt,com,False,False,2.95,3263,1.5
+1749253688.65,ralexi.com,oracle.com,0.80,Let's Encrypt,com,False,False,3.32,3510,2.5
+1749253688.657,mendaide.com,mediafire.com,0.80,Let's Encrypt,com,False,False,3.08,516,1.5
+1749253689.388,icrosspost.com,microsoft.com,0.81,Let's Encrypt,com,False,False,2.99,2700,1.5
+1749253689.392,tlalox.com,trello.com,0.80,Google Trust Services,com,False,False,2.92,5030,0.5
+1749253689.732,tofulitter.com,twitter.com,0.80,ZeroSSL,com,False,False,3.32,2415,2.5
+1749253689.743,fvoltaico.com,flaticon.com,0.80,Let's Encrypt,com,False,False,3.18,,2.5
+1749253689.746,kg88.page,g.page,0.80,Google Trust Services,page,False,False,2.73,,0.5
+1749253689.826,stashcrunch.com,techcrunch.com,0.83,Let's Encrypt,com,False,False,3.32,1328,2.5
+1749253690.096,mearu.com,ea.com,0.80,Let's Encrypt,com,False,False,2.95,2927,1.5
+1749253690.103,abshoo.com,yahoo.com,0.84,Google Trust Services,com,False,False,2.85,3628,0.5
+1749253931.877,naturematic.com,nature.com,0.80,Let's Encrypt,com,False,False,3.37,1190,2.5
+1749253932.07,invaxo.com,envato.com,0.80,Let's Encrypt,com,False,False,3.12,3294,2.5
+1749253932.469,intelcafe.com,intel.com,0.82,Let's Encrypt,com,False,False,3.39,1440,2.5
+1749253932.478,nantum.com,nature.com,0.80,Let's Encrypt,com,False,False,2.92,237,1.5
+1749253932.583,zilego.com,zillow.com,0.80,Let's Encrypt,com,False,False,3.12,3143,2.5
+1749253932.787,ingre.com,bing.com,0.82,Let's Encrypt,com,False,False,3.17,9696,2.5
+1749253932.866,wisehearted.com,iheart.com,0.80,Let's Encrypt,com,False,False,3.59,4208,3.5
+1749253933.081,recruiiter.com,reuters.com,0.80,Let's Encrypt,com,False,False,3.04,3210,1.5
+1749253933.091,emvt.com,mtv.com,0.80,Let's Encrypt,com,False,False,2.75,10159,1.5
+1749253933.468,intelcafe.com,intel.com,0.82,Let's Encrypt,com,False,False,3.39,1440,2.5
+1749253933.682,almolla.com,mozilla.com,0.82,Let's Encrypt,com,False,False,2.48,885,1.5
+1749253933.735,bestcubansintown.com,bandsintown.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.58,182,2.5
+1749253933.815,nydia.com,nvidia.com,0.84,Let's Encrypt,com,False,False,3.17,8940,2.5
+1749253933.816,support.g-pp.com,support.apple.com,0.85,Let's Encrypt,com,False,True,3.25,4567,4.5
+1749253933.903,ingre.com,bing.com,0.82,Let's Encrypt,com,False,False,3.17,9696,2.5
+1749253933.907,nttv.com,mtv.com,0.80,Let's Encrypt,com,False,False,2.75,9159,1.5
+1749253934.173,koracanada.ca,canada.ca,0.82,Google Trust Services,ca,False,False,2.65,3843,0.5
+1749253934.259,autheni.com,rakuten.com,0.82,Let's Encrypt,com,False,True,3.46,2130,5.5
+1749253934.965,owero.com,webroot.com,0.80,Let's Encrypt,com,False,False,2.64,3375,1.5
+1749253935.231,nixler.com,pixlr.com,0.84,Let's Encrypt,com,False,False,3.32,4744,2.5
+1749253935.305,zidunce.com,zdnet.com,0.80,Let's Encrypt,com,False,False,3.28,354,2.5
+1749253935.875,kneau.com,ikea.com,0.82,Let's Encrypt,com,False,False,3.17,449,2.5
+1749253935.937,swuz.org,s.w.org,0.80,Google Trust Services,org,False,False,3.0,1884,0.5
+1749253936.106,moneyan.com,money.cnn.com,0.83,Let's Encrypt,com,False,False,2.91,3524,1.5
+1749253936.202,googlll.com,google.com,0.86,Let's Encrypt,com,False,False,2.41,0,4.75
+1749253936.205,theorify.com,storify.com,0.87,Let's Encrypt,com,False,False,3.42,5026,3.75
+1749253936.379,vuvom.com,avvo.com,0.82,Let's Encrypt,com,False,False,2.5,1778,1.5
+1749253936.385,naturesynth.com,nature.com,0.80,Let's Encrypt,com,False,False,3.64,305,3.5
+1749253936.472,mouseer.com,monster.com,0.82,Let's Encrypt,com,False,False,2.91,1528,1.5
+1749253936.754,*.instagamez.com,instagram.com,0.83,Let's Encrypt,com,False,False,3.62,511,3.5
+1749253936.754,instagamez.com,instagram.com,0.89,Let's Encrypt,com,False,False,3.52,511,3.75
+1749253936.774,radiex.com,yandex.com,0.80,Let's Encrypt,com,False,False,3.32,6086,2.5
+1749253936.775,giscience.com,livescience.com,0.86,Let's Encrypt,com,False,False,3.03,3116,1.75
+1749253936.882,padiex.com,yandex.com,0.80,Let's Encrypt,com,False,False,3.32,2495,2.5
+1749253943.608,patrelle.com,trello.com,0.82,Let's Encrypt,com,False,False,3.25,8830,2.5
+1749253943.651,3r5t.com,rt.com,0.86,ZeroSSL,com,False,False,3.0,312,1.75
+1749253943.847,a9time.com,latimes.com,0.86,Sectigo Limited,com,False,False,3.12,1,4.75
+1749253943.847,*.a9time.com,time.com,0.80,Sectigo Limited,com,False,False,3.25,1,4.5
+1749253943.885,almolla.com,mozilla.com,0.82,Let's Encrypt,com,False,False,2.48,885,1.5
+1749253943.885,vizator.com,vizio.com,0.80,Let's Encrypt,com,False,False,3.28,6223,2.5
+1749253943.886,vizator.com,vizio.com,0.80,Let's Encrypt,com,False,False,3.28,6223,2.5
+1749253944.03,dronera.com,opera.com,0.80,Let's Encrypt,com,False,False,3.1,4802,2.5
+1749253944.056,yport.com,nypost.com,0.84,Let's Encrypt,com,False,False,2.95,7893,1.5
+1749253944.066,lureno.com,lenovo.com,0.80,Let's Encrypt,com,False,False,3.12,4002,2.5
+1749253944.122,wakenspace.com,sendspace.com,0.81,Let's Encrypt,com,False,False,3.38,1503,2.5
+1749253944.127,untrek.com,nature.com,0.80,Let's Encrypt,com,False,False,3.32,4314,2.5
+1749253944.424,peorina.com,opera.com,0.80,Let's Encrypt,com,False,False,3.28,2691,2.5
+1749253944.438,ifweek.com,adweek.com,0.80,Google Trust Services,com,False,False,3.12,138,2.5
+1749253944.442,achv.com,abc.com,0.80,Let's Encrypt,com,False,False,2.75,6530,1.5
+1749253944.719,lantada.com,lynda.com,0.80,Let's Encrypt,com,False,False,3.03,3414,1.5
+1749253944.725,xiyimjg.com,i.ytimg.com,0.82,Let's Encrypt,com,False,False,3.1,2526,2.5
+1749253945.019,fencery.com,freelancer.com,0.80,Let's Encrypt,com,False,False,3.1,3310,2.5
+1749253945.128,centreqa.com,accenture.com,0.80,Let's Encrypt,com,False,False,3.25,2168,2.5
+1749253945.183,mediafyre.com,mediafire.com,0.92,Let's Encrypt,com,False,False,3.39,2137,3.0
+1749253945.222,yavak.com,vk.com,0.80,Let's Encrypt,com,False,False,2.95,1568,1.5
+1749253958.191,vomozo.com,moz.com,0.82,Let's Encrypt,com,False,False,2.32,2046,1.5
+1749253958.192,intellana.com,intel.com,0.82,Let's Encrypt,com,False,False,3.24,3111,2.5
+1749253958.4,syncchart.com,snapchat.com,0.80,Let's Encrypt,com,False,False,3.33,8537,2.5
+1749253958.41,atov.com,mtv.com,0.80,Let's Encrypt,com,False,False,2.75,4286,1.5
+1749253958.421,mediapurge.com,mediafire.com,0.81,Let's Encrypt,com,False,False,3.52,2102,3.5
+1749253958.433,asgora.com,agoda.com,0.84,Let's Encrypt,com,False,False,2.92,3039,1.5
+1749253958.439,follnews.com,foxnews.com,0.87,Let's Encrypt,com,False,False,3.25,482,2.75
+1749253958.557,ixabo.com,pixabay.com,0.80,Let's Encrypt,com,False,False,2.95,2895,1.5
+1749253958.588,interpec.com,pinterest.com,0.80,Let's Encrypt,com,False,False,3.25,9677,2.5
+1749253958.845,intheplan.com,intel.com,0.82,Let's Encrypt,com,False,False,3.55,4839,3.5
+1749253958.985,gilora.com,gitlab.com,0.80,Let's Encrypt,com,False,False,3.12,2601,2.5
+1749253959.009,vinvanet.com,xinhuanet.com,0.80,Google Trust Services,com,False,False,3.25,0,4.5
+1749253959.103,ixabo.com,pixabay.com,0.80,Let's Encrypt,com,False,False,2.95,2895,1.5
+1749253986.836,inuae.com,xinhuanet.com,0.82,Let's Encrypt,com,False,False,3.17,9576,2.5
+1749253986.906,niridia.com,nvidia.com,0.86,Let's Encrypt,com,False,False,3.03,1711,1.75
+1749253987.478,yourskink.com,yoursite.com,0.80,Google Trust Services,com,False,False,3.39,1544,1.5
+1749253987.968,angelicera.com,angelfire.com,0.81,Google Trust Services,com,False,False,3.38,439,1.5
+1749253988.06,valteos.com,patheos.com,0.82,Let's Encrypt,com,False,False,3.28,193,2.5
+1749253988.189,oviem.com,vice.com,0.82,Let's Encrypt,com,False,False,2.73,3418,1.5
+1749253988.327,lamarion.com,amazon.com,0.82,Let's Encrypt,com,False,False,3.08,189,1.5
+1749253988.423,nuvoxa.com,vox.com,0.82,Let's Encrypt,com,False,False,3.12,3546,2.5
+1749253988.473,lurue.com,lulu.com,0.82,Let's Encrypt,com,False,False,2.95,1824,1.5
+1749253988.474,yoursnmine.com,yoursite.com,0.85,Let's Encrypt,com,False,False,3.38,6980,2.5
+1749253995.883,ww11.starwares.com,starwars.com,0.80,Let's Encrypt,com,False,False,3.35,10446,2.5
+1749253995.913,wisehearted.com,iheart.com,0.80,Let's Encrypt,com,False,False,3.59,4208,3.5
+1749253996.162,getupkept.com,getpocket.com,0.85,"GoDaddy.com, Inc.",com,False,False,3.24,123,2.5
+1749253996.306,szattek.com,slate.com,0.80,ZeroSSL,com,False,False,3.28,2652,2.5
+1749253996.388,linkdriven.com,linkedin.com,0.85,Let's Encrypt,com,False,False,3.52,3680,3.5
+1749254096.265,findketa.com,ikea.com,0.80,Let's Encrypt,com,False,False,3.58,1021,3.5
+1749254096.446,acecma.org,acm.org,0.82,Let's Encrypt,org,False,False,2.92,7899,1.5
+1749254096.451,herbtable.com,airtable.com,0.80,Let's Encrypt,com,False,False,3.39,1218,2.5
+1749254096.46,outchase.com,chase.com,0.86,Let's Encrypt,com,False,False,3.25,1899,2.75
+1749254096.637,fth.me,t.me,0.80,DigiCert Inc,me,False,False,2.58,0,3.5
+1749254096.707,ticketages.com,ticketmaster.com,0.80,DigiCert Inc,com,False,False,3.38,371,1.5
+1749254096.875,vicekeh.com,vice.com,0.84,Google Trust Services,com,False,False,3.1,1755,1.5
+1749254096.884,anliba.com,nba.com,0.82,Let's Encrypt,com,False,False,3.12,167,3.5
+1749254097.038,blingday.com,bing.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.58,7142,2.5
+1749254097.099,navoid.com,nvidia.com,0.80,Let's Encrypt,com,False,False,3.12,750,2.5
+1749254097.241,macappstores.com,appstore.com,0.86,Google Trust Services,com,False,False,3.25,2750,1.75
+1749254097.241,*.macappstores.com,appstore.com,0.80,Google Trust Services,com,False,False,3.39,2750,1.5
+1749254097.25,asendra.com,pandora.com,0.82,Let's Encrypt,com,False,False,3.28,927,2.5
+1749254097.294,fth.me,t.me,0.80,DigiCert Inc,me,False,False,2.58,0,3.5
+1749254097.375,ticketages.com,ticketmaster.com,0.80,DigiCert Inc,com,False,False,3.38,371,1.5
+1749254097.406,horanero.com,ranker.com,0.82,Let's Encrypt,com,False,False,3.02,4167,1.5
+1749254097.409,support.mtrace.com,support.apple.com,0.80,Let's Encrypt,com,False,True,3.39,6533,4.5
+1749254097.503,quedely.com,udemy.com,0.80,Let's Encrypt,com,False,False,3.28,8596,2.5
+1749254097.654,statbrite.com,statista.com,0.80,Let's Encrypt,com,False,False,3.33,1201,2.5
+1749254097.828,ticketages.com,ticketmaster.com,0.80,DigiCert Inc,com,False,False,3.38,371,1.5
+1749254097.858,tsc-lda.com,tesla.com,0.80,Let's Encrypt,com,False,False,3.28,5750,2.5
+1749254098.548,topeuro.com,opera.com,0.80,Let's Encrypt,com,False,False,3.03,8723,1.5
+1749254098.552,gitlab.hohe.com,gitlab.com,0.80,Let's Encrypt,com,False,False,3.51,8486,3.5
+1749254098.768,vrcbbs.com,cbs.com,0.82,"CLOUDFLARE, INC.",com,False,False,2.92,672,0.5
+1749254099.029,pixops.com,popsci.com,0.80,Let's Encrypt,com,False,False,2.92,1186,1.5
+1749254099.169,easypet.com,skype.com,0.80,Let's Encrypt,com,False,False,3.28,9860,2.5
+1749254099.175,support.xliebe.com,support.apple.com,0.80,Let's Encrypt,com,False,True,3.73,1279,6.5
+1749254099.181,soa.surveynonkey.com,surveymonkey.com,0.83,Let's Encrypt,com,False,False,3.58,6436,3.5
+1749254099.285,troiwe.com,stripe.com,0.80,Google Trust Services,com,False,False,3.12,1004,1.5
+1749254099.287,gedito.com,reddit.com,0.80,Google Trust Services,com,False,False,3.12,1871,1.5
+1749254099.549,fraxbox.com,xbox.com,0.84,Google Trust Services,com,False,False,3.1,374,1.5
+1749254099.665,intelim.com,intel.com,0.90,Let's Encrypt,com,False,False,3.1,8231,3.0
+1749254099.841,developer.thiper.com,developer.apple.com,0.82,Let's Encrypt,com,False,False,3.52,4859,3.5
+1749254100.342,anelito.com,animoto.com,0.82,Let's Encrypt,com,False,False,3.28,1772,2.5
+1749254100.355,centricadvisory.com,tripadvisor.com,0.82,Let's Encrypt,com,False,False,3.68,491,3.5
+1749254100.663,bilot.de,bild.de,0.80,Let's Encrypt,de,False,False,3.0,,1.5
+1749254100.871,meffy.org,eff.org,0.88,Google Trust Services,org,False,False,2.95,0,3.75
+1749254100.885,mitelle.com,intel.com,0.80,"GoDaddy.com, Inc.",com,False,False,2.91,61,1.5
+1749254101.184,astrenia.com,arstechnica.com,0.81,Let's Encrypt,com,False,False,3.42,1090,3.5
+1749254101.404,vodiza.com,nvidia.com,0.80,Let's Encrypt,com,False,False,3.12,1543,2.5
+1749254101.404,vrcbbs.com,cbs.com,0.82,"CLOUDFLARE, INC.",com,False,False,2.92,672,0.5
+1749254101.412,popluxe.com,apple.com,0.80,Let's Encrypt,com,False,False,3.1,4588,2.5
+1749254101.415,marvity.com,variety.com,0.82,Let's Encrypt,com,False,False,3.28,1399,2.5
+1749254101.557,nran.com,cnn.com,0.80,Let's Encrypt,com,False,False,2.75,9926,1.5
+1749254101.563,web.dmachoise.org,web.archive.org,0.81,Let's Encrypt,org,False,False,3.73,4294,4.5
+1749254101.683,starico.com,gstatic.com,0.82,Let's Encrypt,com,False,False,3.1,4831,2.5
+1749254101.688,marvity.com,variety.com,0.82,Let's Encrypt,com,False,False,3.28,1399,2.5
+1749254101.732,rockana.com,canva.com,0.80,Let's Encrypt,com,False,False,2.91,4120,1.5
+1749254101.807,atixio.com,axios.com,0.84,Let's Encrypt,com,False,False,2.92,2598,1.5
+1749254112.886,nhdart.com,iheart.com,0.80,"CLOUDFLARE, INC.",com,False,False,3.32,63,2.5
+1749254113.103,likepapa.com,ikea.com,0.80,Let's Encrypt,com,False,False,3.25,1011,2.5
+1749254113.345,s3.us-northeast-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.87,7232,3.5
+1749254113.347,s3.ap-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.66,7232,2.5
+1749254113.347,*.s3.ap-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.72,7232,3.5
+1749254113.347,s3.sa-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.53,7232,2.5
+1749254113.347,*.s3.sa-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.61,7232,2.5
+1749254113.347,s3.us-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.67,7232,2.5
+1749254113.347,*.s3.us-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.74,7232,3.5
+1749254113.35,s3.sa-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.53,7232,2.5
+1749254113.35,*.s3.sa-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.61,7232,2.5
+1749254113.352,s3.ap-southeast-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.82,7232,3.5
+1749254113.353,*.eu-west-1.es.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.73,7232,3.75
+1749254113.357,s3.ap-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.66,7232,2.5
+1749254113.362,s3.us-west-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.88,Amazon,com,False,False,3.72,7232,3.75
+1749254113.362,*.s3.us-west-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.78,7232,3.75
+1749254113.459,wixoa.com,wix.com,0.88,Let's Encrypt,com,False,False,2.95,3649,1.75
+1749254113.462,toonzilla.com,mozilla.com,0.83,Let's Encrypt,com,False,False,3.18,5100,2.5
+1749254113.539,ssl.gsiz.com,ssl.gstatic.com,0.81,DigiCert Inc,com,False,False,3.02,6652,0.5
+1749254113.547,aidesonline.com,tandfonline.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.37,507,1.5
+1749254113.69,s3.us-west-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.88,Amazon,com,False,False,3.72,7232,3.75
+1749254113.69,*.s3.us-west-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.78,7232,3.75
+1749254113.698,s3.eu-south-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.83,Amazon,com,False,False,3.83,7232,3.5
+1749254113.698,*.s3.eu-south-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.80,Amazon,com,False,False,3.88,7232,3.5
+1749254113.703,s3.us-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.67,7232,2.5
+1749254113.703,*.s3.us-east-2.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.74,7232,3.5
+1749254113.703,s3.us-gov-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.82,Amazon,com,False,False,3.83,7232,3.5
+1749254113.704,s3.us-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.88,Amazon,com,False,False,3.67,7232,2.75
+1749254113.704,*.s3.us-east-1.amazonaws.com,s3-eu-west-1.amazonaws.com,0.85,Amazon,com,False,False,3.74,7232,3.75
+1749254113.782,mail.com.bz,gmail.com,0.80,Let's Encrypt,bz,False,False,3.1,,2.5
+1749254113.788,zappeak.com,apple.com,0.80,Google Trust Services,com,False,False,3.1,473,1.5
+1749254113.791,*.tesyla.com,tesla.com,0.86,Let's Encrypt,com,False,False,3.42,5112,3.75
+1749254113.791,tesyla.com,tesla.com,0.95,Let's Encrypt,com,False,False,3.32,5112,3.0
+1749254113.791,healthscape.com,health.com,0.80,Google Trust Services,com,False,False,3.37,7784,1.5
+1749254113.839,iimtonline.com,eonline.com,0.80,Let's Encrypt,com,False,False,3.04,5927,1.5
+1749254144.856,leyates.com,latimes.com,0.82,Google Trust Services,com,False,False,3.28,3026,1.5
+1749254144.955,fenqibook.com,facebook.com,0.80,"CLOUDFLARE, INC.",com,False,False,3.33,,1.5
+1749254145.101,quantocity.com,udacity.com,0.80,Let's Encrypt,com,False,False,3.38,1396,2.5
+1749254145.102,kiteart.com,iheart.com,0.86,Let's Encrypt,com,False,False,3.28,7362,2.75
+1749254145.216,aidesonline.com,tandfonline.com,0.80,"GoDaddy.com, Inc.",com,False,False,3.37,507,1.5
+1749254145.371,marketadept.com,marketwatch.com,0.80,Let's Encrypt,com,False,False,3.37,1757,2.5

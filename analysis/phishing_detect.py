@@ -50,6 +50,15 @@ FALSE_POSITIVE_PATTERNS = [
     "wordpress.com", "blogspot.com", "automattic.com"
 ]
 
+def score_similarity(similarity_score: float) -> float:
+    if similarity_score >= 0.90:
+        return 1.0
+    elif similarity_score >= 0.85:
+        return 0.75
+    elif similarity_score >= 0.80:
+        return 0.5
+    return 0.0
+
 def is_known_false_positive(domain):
     return any(pattern in domain.lower() for pattern in FALSE_POSITIVE_PATTERNS)
 
@@ -78,11 +87,12 @@ def phishing_score(
     has_keyword: bool,
     tld_suspicious: bool,
     issuer: str,
-    registration_days: int
-) -> int:
-    score = 0
+    registration_days: int,
+    similarity_score: float
+) -> float:
+    score = 0.0
 
-    # Cecha 1: entropia domeny
+    # Entropy
     if entropy >= 3.7:
         score += 3
     elif entropy >= 3.4:
@@ -90,19 +100,12 @@ def phishing_score(
     elif entropy >= 3.1:
         score += 1
 
-    # Cecha 2: słowa kluczowe
     if has_keyword:
         score += 2
-
-    # Cecha 3: podejrzane TLD
     if tld_suspicious:
         score += 1
-
-    # Cecha 4: podejrzani issuerzy
     if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."}:
         score += 1
-
-    # Cecha 5: młoda domena
     if registration_days is not None:
         if registration_days < 14:
             score += 3
@@ -111,12 +114,13 @@ def phishing_score(
         elif registration_days < 180:
             score += 1
 
-    return min(score, 10)
+    score += score_similarity(similarity_score)
+    return round(min(score, 10), 2)
 
-def extract_features(domain: str, issuer: str, registration_days: int = None):
+def extract_features(domain: str, issuer: str, registration_days: int, similarity_score: float):
     tld = domain.split(".")[-1]
     tld_suspicious = tld in TLD_SUSPICIOUS
     has_keyword = contains_suspicious_word(domain)
     entropy = round(calculate_entropy(domain), 2)
-    score = phishing_score(entropy, has_keyword, tld_suspicious, issuer, registration_days)
-    return tld, tld_suspicious, has_keyword, entropy, registration_days, score
+    score = phishing_score(entropy, has_keyword, tld_suspicious, issuer, registration_days, similarity_score)
+    return tld, tld_suspicious, has_keyword, entropy, score

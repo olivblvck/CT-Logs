@@ -42,7 +42,7 @@ def on_message(ws, message):
                         print(f"[ALERT] Possible phishing domain: {domain} ~ {brand} (score={score_match:.2f})")
 
                         reg_days = domain_registration_age(domain)
-                        tld, tld_suspicious, has_keyword, entropy, reg_days, score = extract_features(domain, issuer, reg_days)
+                        tld, tld_suspicious, has_keyword, entropy, score = extract_features(domain, issuer, reg_days,score_match)
 
                         print(f"        → Features: TLD={tld}, Suspicious={tld_suspicious}, Keyword={has_keyword}, Entropy={entropy}, Days={reg_days}, Score={score:.2f}")
 

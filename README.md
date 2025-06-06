@@ -101,21 +101,20 @@ For each domain found in new TLS certificates, the following features are extrac
 
 ## Phishing Score Calculation
 
-Each domain is assigned a `score` between `0.0` and `1.0` indicating its phishing likelihood.
+Each domain is assigned a `score` between 0 and 10, reflecting the likelihood of phishing. The higher the score, the more suspicious the domain.
 
-The score is based on:
+The score is calculated based on the following features:
 
-| Feature                | Condition                                          | Points |
-|------------------------|---------------------------------------------------|--------|
-| **Entropy**            | > 3.5                                             | +0.25  |
-| **Suspicious Keyword** | Yes                                               | +0.25  |
-| **TLD Suspicious**     | `.xyz`, `.top`, `.buzz`, `.shop`                  | +0.2   |
-| **WHOIS Age**          | Registered within last 14 days                    | +0.2   |
-| **Brand Match**        | Similarity to known brands (e.g. `goog1e.com`)    | up to +0.1 |
+| Feature              | Condition                                               | Points   |
+|----------------------|---------------------------------------------------------|----------|
+| **Entropy**          | ≥ 3.1 → +1, ≥ 3.4 → +2, ≥ 3.7 → +3                      | +1–3     |
+| **Suspicious Keyword** | Presence of phishing-related words  (e.g. `login`, `auth`, `verify`)  | +2       |
+| **Suspicious TLD**   | Known shady TLDs (e.g. `.xyz`, `.top`, `.buzz`, `.shop`) | +1 |
+| **Issuer**           | Free/automated issuers (e.g. Let's Encrypt, ZeroSSL)    | +1 |
+| **WHOIS Age**        | <14 days → +3, <60 → +2, <180 → +1                      | +1–3     |
+ |**Similarity to Brand**| Levenshtein ratio ≥ 0.80 and ≠ brand → scaled: 0.80 → +0.5, 0.85 → +0.75, ≥ 0.90 → +1.0 | +0–1|
 
-The final score is normalized to max `1.0`.
-
-> Domains with a score above a chosen threshold (e.g., 0.6) can be flagged as potential phishing.
+> Domains exceeding a chosen threshold (e.g. **score ≥ 4**) can be flagged as **medium** or **high-risk**.
 
 ---
 
