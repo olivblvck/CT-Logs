@@ -82,11 +82,13 @@ CT-Logs/
 ├── certstream/
 │   └── listener.py
 ├── dashboard/
-│   └── streamlit_app.py (optional GUI)
+│   └── streamlit_app.py (future update)
 ├── data/
-│   ├── suspected_phishing.csv
 │   └── websites.txt
+├── output/
+│   ├── suspected_phishing.csv
 ├── requirements.txt
+├── README.md
 ```
 
 ---
