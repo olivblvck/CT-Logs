@@ -1,49 +1,63 @@
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# Ścieżka do pliku CSV
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-CSV_PATH = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
+DATA_PATH = os.path.join(PROJECT_ROOT, "data", "suspected_phishing.csv")
 
+df = pd.read_csv(DATA_PATH)
 
-# Wczytanie danych
-df = pd.read_csv(CSV_PATH)
+print(f"Liczba wszystkich rekordów: {len(df)}")
+print(f"Liczba unikalnych domen: {df['domain'].nunique()}\n")
 
-print("Liczba wszystkich rekordów:", len(df))
-print("Liczba unikalnych domen:", df["domain"].nunique())
+print("Top 10 TLD:")
+print(df["tld"].value_counts().head(10), "\n")
 
-# TLD
-print("\nTop 10 TLD:")
-print(df["tld"].value_counts().head(10))
+print("Top 10 Issuerów:")
+print(df["issuer"].value_counts().head(10), "\n")
 
-# Issuerzy
-print("\nTop 10 Issuerów:")
-print(df["issuer"].value_counts().head(10))
+print("Statystyka entropii:")
+print(df["entropy"].describe(), "\n")
 
-# Entropia
-print("\nStatystyka entropii:")
-print(df["entropy"].describe())
+print("Domeny z podejrzanymi słowami:")
+print(df["has_keyword"].value_counts(), "\n")
 
-# Histogram entropii
-df["entropy"].plot.hist(bins=30, title="Rozkład entropii domen", figsize=(8,4))
-plt.xlabel("Entropia")
+print("Domeny z podejrzanym TLD:")
+print(df["tld_suspicious"].value_counts(), "\n")
+
+print("Najczęściej dopasowane znane marki:")
+print(df["brand_match"].value_counts().head(10), "\n")
+
+# Grupowanie kombinacji issuer + podejrzane cechy
+grouped = df.groupby(["issuer", "tld_suspicious", "has_keyword"]).size().reset_index(name="count")
+print("Kombinacje issuer + TLD podejrzany + słowo kluczowe:")
+print(grouped.sort_values("count", ascending=False), "\n")
+
+# Scoring: rozkład
+print("Statystyka phishing score:")
+print(df["score"].describe(), "\n")
+
+# Kategoryzacja zagrożeń
+def label_risk(score):
+    if score >= 7:
+        return "high"
+    elif score >= 4:
+        return "medium"
+    else:
+        return "low"
+
+df["risk_level"] = df["score"].apply(label_risk)
+
+print("Rozkład poziomu ryzyka:")
+print(df["risk_level"].value_counts(), "\n")
+
+# Wykres rozkładu score
+plt.hist(df["score"], bins=range(0, 12), edgecolor='black')
+plt.title("Rozkład phishing score")
+plt.xlabel("Score")
+plt.ylabel("Liczba domen")
+plt.grid(True)
 plt.tight_layout()
-plt.show()
-
-# Podejrzane słowa
-print("\nDomeny z podejrzanymi słowami:")
-print(df["has_keyword"].value_counts())
-
-# Podejrzane TLD
-print("\nDomeny z podejrzanym TLD:")
-print(df["tld_suspicious"].value_counts())
-
-# Najczęściej podobne marki
-print("\nNajczęściej dopasowane znane marki:")
-print(df["brand_match"].value_counts().head(10))
-
-# Korelacja: issuer + podejrzany TLD + słowo kluczowe
-print("\nKombinacje issuer + TLD podejrzany + słowo kluczowe:")
-combo = df.groupby(["issuer", "tld_suspicious", "has_keyword"]).size().reset_index(name="count")
-print(combo.sort_values(by="count", ascending=False).head(15))
+plt.savefig(os.path.join(PROJECT_ROOT, "analysis", "score_distribution.png"))
+plt.close()

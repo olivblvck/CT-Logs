@@ -1,4 +1,6 @@
 websocket-client
-python-Levenshtein
-streamlit
 pandas
+matplotlib
+python-Levenshtein
+dnspython
+python-whois
