@@ -1,6 +1,7 @@
-websocket-client
 pandas
 matplotlib
+seaborn
 python-Levenshtein
-dnspython
 python-whois
+dnspython
+websocket-client
