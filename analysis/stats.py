@@ -12,6 +12,15 @@ os.makedirs(PLOTS_PATH, exist_ok=True)
 # Load data
 df = pd.read_csv(DATA_PATH)
 
+# Remove exact duplicate rows
+df.drop_duplicates(inplace=True)
+
+# Remove likely redundant records based on domain + core features (except timestamp)
+df = df.drop_duplicates(subset=[
+    "domain", "brand_match", "similarity_score", "issuer", "tld",
+    "tld_suspicious", "has_keyword", "entropy", "registration_days", "score"
+])
+
 # Convert data types
 df["score"] = pd.to_numeric(df["score"], errors="coerce")
 df["entropy"] = pd.to_numeric(df["entropy"], errors="coerce")
