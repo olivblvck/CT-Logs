@@ -41,6 +41,9 @@ def on_message(ws, message):
             print(f"[{timestamp}] Domains: {all_domains}")
             print(f"  ↳ Issuer: {issuer}")
 
+            # Note: Data is written to disk immediately after each certificate is processed.
+            # This avoids excessive memory usage and allows long-running collection (e.g., overnight)
+            # without risking data loss on interruption.
             with open(OUTPUT_FILE, "a", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 for domain in all_domains:
@@ -51,12 +54,15 @@ def on_message(ws, message):
 
                         # Get WHOIS registration age
                         reg_days = domain_registration_age(domain)
-                        tld, tld_suspicious, has_keyword, entropy, score = extract_features(domain, issuer, reg_days,score_match)
+                        tld, tld_suspicious, has_keyword, entropy, score = extract_features(
+                            domain, issuer, reg_days, score_match
+                        )
 
                         # Extract domain features and compute final phishing score
-                        print(f"        → Features: TLD={tld}, Suspicious={tld_suspicious}, Keyword={has_keyword}, Entropy={entropy}, Days={reg_days}, Score={score:.2f}")
+                        print(f"        → Features: TLD={tld}, Suspicious={tld_suspicious}, "
+                              f"Keyword={has_keyword}, Entropy={entropy}, Days={reg_days}, Score={score:.2f}")
 
-                        # Append to CSV file
+                        # Append to CSV file (immediate disk write)
                         writer.writerow([
                             timestamp, domain, brand, f"{score_match:.2f}", issuer,
                             tld, tld_suspicious, has_keyword, entropy, reg_days, score
@@ -97,7 +103,3 @@ def run_client():
 # Main entry point
 if __name__ == "__main__":
     run_client()
-
-
-
-
