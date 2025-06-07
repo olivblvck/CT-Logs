@@ -45,7 +45,7 @@ def calculate_entropy(s):
 # Suspicious TLDs commonly associated with phishing, scams, and low-cost registrations.
 TLD_SUSPICIOUS = {
     # Freenom-based and free/cheap TLDs
-    "tk", "ml", "ga", "cf", "gq", "icu", "cyou", "vip", "cam", "men",
+    "tk", "ml", "ga", "cf", "gq", "icu", "cyou", "vip", "cam", "men", "xyz", "me", "info", "sbs", "icu", "cfd"
 
     # Marketing and misleading content themes
     "click", "link", "press", "review", "trade", "stream", "party", "download", "racing", "loan", "win", "date",
@@ -54,13 +54,13 @@ TLD_SUSPICIOUS = {
     "host", "website", "space", "site", "online", "webcam", "cloud",
 
     # Lifestyle and trendy TLDs – often used in social engineering or deceptive branding
-    "buzz", "shop", "top", "club", "life", "live", "fun", "fit", "mom", "today", "beauty", "pics", "fashion",
+    "buzz", "shop", "top", "club", "life", "live", "fun", "fit", "mom", "today", "beauty", "pics", "fashion", "boats", "autos",
 
     # Geographic or sovereign TLDs with known history of lax policies or cheap registration
     "zw", "cm", "vu", "cd", "cc", "la", "su", "tv", "to",
 
     # Frequently reported in phishing/malware campaigns or underground markets
-    "uno", "xin", "lol", "gdn", "faith", "science", "work", "run", "pro", "asia", "ws", "pw", "yt", "bd",
+    "uno", "xin", "lol", "gdn", "faith", "science", "work", "run", "pro", "asia", "ws", "pw", "yt", "bd", "cam",
 }
 # Common AWS S3 and related service official endpoints to avoid false positives
 AWS_DOMAINS = [
