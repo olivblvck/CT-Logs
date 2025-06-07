@@ -8,43 +8,46 @@ DATA_PATH = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
 PLOTS_PATH = os.path.join(PROJECT_ROOT, "output", "plots")
 os.makedirs(PLOTS_PATH, exist_ok=True)
 
-# Wczytanie danych
+# Load data
 df = pd.read_csv(DATA_PATH)
 
-# Konwersja typów
+# Convert data types
 df["score"] = pd.to_numeric(df["score"], errors="coerce")
 df["entropy"] = pd.to_numeric(df["entropy"], errors="coerce")
 df["registration_days"] = pd.to_numeric(df["registration_days"], errors="coerce")
 
-print(f"Liczba wszystkich rekordów: {len(df)}")
-print(f"Liczba unikalnych domen: {df['domain'].nunique()}\n")
+# Summary stats
+print(f"Total records: {len(df)}")
+print(f"Unique domains: {df['domain'].nunique()}\n")
 
-print("Top 10 TLD:")
+print("Top 10 TLDs:")
 print(df["tld"].value_counts().head(10), "\n")
 
-print("Top 10 Issuerów:")
+print("Top 10 Issuers:")
 print(df["issuer"].value_counts().head(10), "\n")
 
-print("Statystyka entropii:")
+print("Entropy statistics:")
 print(df["entropy"].describe(), "\n")
 
-print("Domeny z podejrzanymi słowami:")
+print("Domains containing suspicious keywords:")
 print(df["has_keyword"].value_counts(), "\n")
 
-print("Domeny z podejrzanym TLD:")
+print("Domains with suspicious TLD:")
 print(df["tld_suspicious"].value_counts(), "\n")
 
-print("Najczęściej dopasowane znane marki:")
+print("Most frequent matched brands:")
 print(df["brand_match"].value_counts().head(10), "\n")
 
+# Group combinations
 grouped = df.groupby(["issuer", "tld_suspicious", "has_keyword"]).size().reset_index(name="count")
-print("Kombinacje issuer + TLD podejrzany + słowo kluczowe:")
+print("Issuer + Suspicious TLD + Suspicious keyword combinations:")
 print(grouped.sort_values("count", ascending=False), "\n")
 
-print("Statystyka phishing score:")
+# Score stats
+print("Phishing score statistics:")
 print(df["score"].describe(), "\n")
 
-# Kategoryzacja poziomu ryzyka
+# Risk labeling
 def label_risk(score):
     if pd.isna(score):
         return "unknown"
@@ -56,71 +59,71 @@ def label_risk(score):
         return "low"
 
 df["risk_level"] = df["score"].apply(label_risk)
-print("Rozkład poziomu ryzyka:")
+print("Risk level distribution:")
 print(df["risk_level"].value_counts(), "\n")
 
-# 1. Histogram phishing score
+# 1. Phishing score distribution
 plt.hist(df["score"].dropna(), bins=range(0, 12), edgecolor='black')
-plt.title("Rozkład phishing score")
+plt.title("Phishing Score Distribution")
 plt.xlabel("Score")
-plt.ylabel("Liczba domen")
+plt.ylabel("Number of Domains")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_distribution.png"))
 plt.close()
 
-# 2. Phishing score vs Entropy
+# 2. Score vs Entropy
 sns.scatterplot(data=df, x="entropy", y="score")
-plt.title("Phishing score vs Entropy")
+plt.title("Phishing Score vs Entropy")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_entropy.png"))
 plt.close()
 
-# 3. Score vs Registration age
+# 3. Score vs Domain Age
 sns.scatterplot(data=df, x="registration_days", y="score")
-plt.title("Phishing score vs Wiek domeny (dni)")
+plt.title("Phishing Score vs Domain Age (days)")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_age.png"))
 plt.close()
 
-# 4. Histogram długości domen
+# 4. Domain length histogram
 df["domain_length"] = df["domain"].astype(str).apply(len)
 df["domain_length"].hist(bins=20, edgecolor='black')
-plt.title("Długość domen")
-plt.xlabel("Liczba znaków")
+plt.title("Domain Length Distribution")
+plt.xlabel("Number of Characters")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "domain_length.png"))
 plt.close()
 
-# 5. Heatmapa TLD vs Issuer
+# 5. Heatmap of TLD vs Issuer
 pivot = df.pivot_table(index="tld", columns="issuer", aggfunc="size", fill_value=0)
 plt.figure(figsize=(12, 6))
 sns.heatmap(pivot, annot=True, fmt="d", cmap="YlGnBu")
-plt.title("Częstość: TLD vs Issuer")
+plt.title("Frequency: TLD vs Issuer")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "tld_vs_issuer.png"))
 plt.close()
 
-# 6. Boxplot score vs brand_match (top 5)
+# 6. Boxplot: Score by top brand matches
 top_brands = df["brand_match"].value_counts().head(5).index
 sns.boxplot(data=df[df["brand_match"].isin(top_brands)], x="brand_match", y="score")
-plt.title("Phishing score dla najczęstszych brand_match")
+plt.title("Phishing Score for Top Brand Matches")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_brand_match.png"))
 plt.close()
 
-# 7. Score vs słowo kluczowe
+# 7. Score by suspicious keyword presence
 sns.boxplot(data=df, x="has_keyword", y="score")
-plt.title("Phishing score vs obecność słowa kluczowego")
-plt.xticks([0, 1], ["Brak", "Obecne"])
+plt.title("Phishing Score vs Suspicious Keyword Presence")
+plt.xticks([0, 1], ["Absent", "Present"])
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_keyword.png"))
 plt.close()
 
-# 8. Wykres słupkowy Top 10 TLD
+# 8. Top 10 TLDs bar chart
 df["tld"].value_counts().head(10).plot(kind="bar")
-plt.title("Top 10 końcówek domen (TLD)")
+plt.title("Top 10 Domain Endings (TLDs)")
 plt.xlabel("TLD")
-plt.ylabel("Liczba")
+plt.ylabel("Count")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "top_tld.png"))
 plt.close()
