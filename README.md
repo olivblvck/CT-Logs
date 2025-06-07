@@ -64,15 +64,14 @@ data/suspected_phishing.csv
 CT-Logs/
 ├── analysis/
 │   ├── phishing_detect.py
-│   ├── stats.py
+│   └── stats.py
 ├── certstream/
 │   └── listener.py
-├── dashboard/
-│   └── streamlit_app.py (future update)
 ├── data/
 │   └── websites.txt
 ├── output/
-│   ├── suspected_phishing.csv
+│   ├──suspected_phishing.csv
+│   └──plots/ (...)
 ├── requirements.txt
 ├── README.md
 ```
