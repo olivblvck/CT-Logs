@@ -163,9 +163,61 @@ This script provides:
 
 ## Todo / Future Work
 
-- DNS / ASN checks (e.g., identify free hosting providers or bulletproof infrastructure)
-- Passive DNS / domain reputation integrations
-- Historical enrichment: attach certificate metadata, hosting history, etc.
-- Integration with threat intel feeds
+A. FUNKCJONALNOŚĆ
+
+1. Strumieniowe przetwarzanie danych
+	•	Zaimplementuj pełnoprawny mechanizm kolejkowania i buforowania danych z certstream.
+	•	Obsłuż rozłączenia, timeouty, błędy sieciowe — z backoffem i reconnectem.
+	•	Dodaj możliwość asynchronicznego przetwarzania certyfikatów (np. przez asyncio, threading, multiprocessing).
+
+2. System reguł heurystycznych
+
+Dodaj zaawansowane reguły wykrywania phishingu:
+	•	detekcja homografów (np. g00gle.com, arnazon.com)
+	•	słowa kluczowe w domenach (np. secure, login, verify)
+	•	anomalie w strukturze certyfikatu (CN ≠ SAN, brak OCSP, zbyt krótki czas życia)
+	•	analizuj organizację, lokalizację, wystawcę certyfikatu
+
+3. Integracja z zewnętrznymi źródłami
+	•	Sprawdzenie reputacji domeny: phishtank, virustotal, abuse.ch, URLScan.io
+	•	Generowanie podobnych domen z dnstwister i porównanie z CT Logs
+
+4. Wprowadzenie klasyfikatora ML
+	•	Zbieranie danych: podejrzane i nieszkodliwe domeny
+	•	Feature engineering (długość domeny, entropia, zawartość certyfikatu, itp.)
+	•	Trening klasyfikatora: nawet prostego drzewa decyzyjnego (sklearn) z ewaluacją metryk
+
+B. JAKOŚĆ KODU
+
+5. Refaktoryzacja struktury projektu
+	•	Podział na moduły: core/, detection/, data/, utils/, api/
+	•	Dokumentacja każdej funkcji: docstringi, typowanie (Python 3 type hints)
+	•	Jednolity styl kodu (PEP8), automatyzacja przez black lub flake8
+
+6. Testy jednostkowe
+	•	Napisz testy dla każdego komponentu: pobieranie danych, detekcja, analiza certyfikatów
+	•	Użyj pytest, mock, unittest
+
+7. Logowanie i monitoring
+	•	Zaimplementuj logging z poziomami (INFO, ERROR, DEBUG)
+	•	Zapisuj błędy z whois, dns, API do osobnych logów
+
+C. ANALIZA I RAPORT
+
+8. System ewaluacji
+	•	Metryki: precision, recall, F1-score, confusion matrix dla klasyfikatora
+	•	Porównanie skuteczności heurystyk vs ML
+	•	Przykłady wykrytych domen, błędy fałszywie pozytywne i negatywne
+
+9. Wizualizacje
+	•	Statystyki rejestrowanych domen (wykresy: typy certyfikatów, długość nazw, popularność TLD)
+	•	Heatmapy, słowa kluczowe, trend phishingowych nazw w czasie
+
+10. Raport końcowy
+	•	Schemat architektury systemu
+	•	Opis metod i uzasadnienie ich wyboru
+	•	Opis wyników z tabelami, wykresami, metrykami
+	•	Omówienie ograniczeń i możliwości dalszego rozwoju
+
 
 ---
