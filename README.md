@@ -165,10 +165,11 @@ This script provides:
 
 A. FUNKCJONALNOŚĆ
 
-1. Strumieniowe przetwarzanie danych
+**DONE: 1. Strumieniowe przetwarzanie danych
 	-	Zaimplementuj pełnoprawny mechanizm kolejkowania i buforowania danych z certstream.
 	-	Obsłuż rozłączenia, timeouty, błędy sieciowe — z backoffem i reconnectem.
-	-	Dodaj możliwość asynchronicznego przetwarzania certyfikatów (np. przez asyncio, threading, multiprocessing).
+	-	Dodaj możliwość asynchronicznego przetwarzania certyfikatów (np. przez asyncio, threading, multiprocessing).**
+
 
 2. System reguł heurystycznych
 
