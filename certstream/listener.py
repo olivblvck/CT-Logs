@@ -1,8 +1,10 @@
 # analysis/listener.py
-import websocket
+import websockets
 import json
 import csv
 import os
+import asyncio
+import traceback
 from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
 import time
 
@@ -12,6 +14,8 @@ CERTSTREAM_URL = "ws://127.0.0.1:8080"
 # Define paths for project root and output file
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_FILE = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
+
+queue = asyncio.Queue()
 
 # Ensure output directory exists
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
@@ -27,79 +31,73 @@ if not os.path.exists(OUTPUT_FILE) or os.stat(OUTPUT_FILE).st_size == 0:
             "entropy", "registration_days", "score"
         ])
 
-# Handler for each incoming WebSocket message
-def on_message(ws, message):
-    try:
-        data = json.loads(message)
-        # Process only certificate update messages
-        if data.get("message_type") == "certificate_update":
-            cert_data = data.get("data", {})
-            all_domains = cert_data.get("leaf_cert", {}).get("all_domains", [])
-            timestamp = cert_data.get("seen", None)
-            issuer = cert_data.get("leaf_cert", {}).get("issuer", {}).get("O", "Unknown")
 
-            print(f"[{timestamp}] Domains: {all_domains}")
-            print(f"  ↳ Issuer: {issuer}")
+async def process_worker():
+    while True:
+        try:
+            message = await queue.get()
+        except asyncio.CancelledError:
+            break  # Nie rób nic więcej, kończ pętlę
 
-            # Note: Data is written to disk immediately after each certificate is processed.
-            # This avoids excessive memory usage and allows long-running collection (e.g., overnight)
-            # without risking data loss on interruption.
-            with open(OUTPUT_FILE, "a", newline="") as csvfile:
-                writer = csv.writer(csvfile)
-                for domain in all_domains:
-                    # Check similarity to known brands
-                    suspicious, brand, score_match = is_similar(domain)
-                    if suspicious:
-                        print(f"[ALERT] Possible phishing domain: {domain} ~ {brand} (score={score_match:.2f})")
+        try:
+            await process_message(message)
+        except Exception:
+            print("[ERROR] Processing failed:")
+            traceback.print_exc()
+        finally:
+            queue.task_done()
 
-                        # Get WHOIS registration age
-                        reg_days = domain_registration_age(domain)
-                        tld, tld_suspicious, has_keyword, entropy, score = extract_features(
-                            domain, issuer, reg_days, score_match
-                        )
+async def process_message(message):
+    data = json.loads(message)
+    if data.get("message_type") != "certificate_update":
+        return
 
-                        # Extract domain features and compute final phishing score
-                        print(f"        → Features: TLD={tld}, Suspicious={tld_suspicious}, "
-                              f"Keyword={has_keyword}, Entropy={entropy}, Days={reg_days}, Score={score:.2f}")
+    cert_data = data.get("data", {})
+    domains = cert_data.get("leaf_cert", {}).get("all_domains", [])
+    timestamp = cert_data.get("seen")
+    issuer = cert_data.get("leaf_cert", {}).get("issuer", {}).get("O", "Unknown")
 
-                        # Append to CSV file (immediate disk write)
-                        writer.writerow([
-                            timestamp, domain, brand, f"{score_match:.2f}", issuer,
-                            tld, tld_suspicious, has_keyword, entropy, reg_days, score
-                        ])
-    except Exception as e:
-        print(f"[ERROR] Failed to parse message: {e}")
+    with open(OUTPUT_FILE, "a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        for domain in domains:
+            suspicious, brand, score_match = is_similar(domain)
+            if not suspicious:
+                continue
 
-# WebSocket error handler
-def on_error(ws, error):
-    print(f"[ERROR] WebSocket error: {error}")
+            reg_days = domain_registration_age(domain)
+            tld, tld_suspicious, has_keyword, entropy, score = extract_features(
+                domain, issuer, reg_days, score_match
+            )
 
-# WebSocket closure handler
-def on_close(ws, close_status_code, close_msg):
-    print(f"[INFO] WebSocket closed: {close_status_code}, {close_msg}")
+            print(f"[{timestamp}] ALERT: {domain} ~ {brand} (score={score:.2f})")
 
-# WebSocket open handler
-def on_open(ws):
-    print("[INFO] Connected to local certstream server...")
+            writer.writerow([
+                timestamp, domain, brand, f"{score_match:.2f}", issuer,
+                tld, tld_suspicious, has_keyword, entropy, reg_days, score
+            ])
 
 # Persistent client loop with reconnection on failure
-def run_client():
+async def certstream_client():
+    backoff = 1
     while True:
-        print("[INFO] Starting CertStream client...")
         try:
-            ws = websocket.WebSocketApp(
-                CERTSTREAM_URL,
-                on_message=on_message,
-                on_error=on_error,
-                on_close=on_close,
-                on_open=on_open
-            )
-            ws.run_forever()
+            print("[INFO] Connecting to CertStream...")
+            async with websockets.connect(CERTSTREAM_URL) as ws:
+                backoff = 1
+                print("[INFO] Connected.")
+                async for message in ws:
+                    await queue.put(message)
         except Exception as e:
-            print(f"[ERROR] WebSocket client crashed: {e}")
-        print("[INFO] Reconnecting in 5 seconds...")
-        time.sleep(5)
+            print(f"[WARN] Connection failed: {e}")
+            print(f"[INFO] Reconnecting in {backoff} seconds...")
+            await asyncio.sleep(backoff)
+            backoff = min(backoff * 2, 60)  # exponential backoff
+
+async def main():
+    consumer = asyncio.create_task(process_worker())
+    producer = asyncio.create_task(certstream_client())
+    await asyncio.gather(producer, consumer)
 
 # Main entry point
 if __name__ == "__main__":
-    run_client()
+    asyncio.run(main())
