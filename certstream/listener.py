@@ -6,6 +6,8 @@ import os
 import asyncio
 import traceback
 from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
+from utils.dns_twister import get_permutations
+
 import time
 
 # Address of the local CertStream-compatible WebSocket server
@@ -59,10 +61,44 @@ async def process_message(message):
 
     with open(OUTPUT_FILE, "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
+
+        processed_domains = set()
+
         for domain in domains:
-            suspicious, brand, score_match = is_similar(domain)
-            if not suspicious:
-                continue
+            try:
+                # Add original domain
+                to_check = {domain}
+
+                # Add fuzzed domains from dnstwister
+                permutations = get_permutations(domain)
+                for entry in permutations:
+                    if entry.get("dns-a"):  # only if the domain resolves
+                        to_check.add(entry["domain"])
+
+                for fuzzed_domain in to_check:
+                    if fuzzed_domain in processed_domains:
+                        continue  # skip already processed
+                    processed_domains.add(fuzzed_domain)
+
+                    suspicious, brand, score_match = is_similar(fuzzed_domain)
+                    if not suspicious:
+                        continue
+
+                    reg_days = domain_registration_age(fuzzed_domain)
+                    tld, tld_suspicious, has_keyword, entropy, score = extract_features(
+                        fuzzed_domain, issuer, reg_days, score_match
+                    )
+
+                    print(f"[{timestamp}] ALERT: {fuzzed_domain} ~ {brand} (score={score:.2f})")
+
+                    writer.writerow([
+                        timestamp, fuzzed_domain, brand, f"{score_match:.2f}", issuer,
+                        tld, tld_suspicious, has_keyword, entropy, reg_days, score
+                    ])
+
+            except Exception as e:
+                print(f"[ERROR] Failed dnstwister enrichment for domain: {domain}")
+                traceback.print_exc()
 
             reg_days = domain_registration_age(domain)
             tld, tld_suspicious, has_keyword, entropy, score = extract_features(

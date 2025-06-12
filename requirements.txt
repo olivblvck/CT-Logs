@@ -5,3 +5,4 @@ python-Levenshtein
 python-whois
 dnspython
 websocket-client
+requests
