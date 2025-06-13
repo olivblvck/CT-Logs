@@ -6,3 +6,5 @@ python-whois
 dnspython
 websocket-client
 requests
+aiohttp
+cachetools

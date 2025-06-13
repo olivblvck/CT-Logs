@@ -3,12 +3,17 @@ import websockets
 import json
 import csv
 import os
+import time
 import asyncio
 import traceback
 from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
 from utils.dns_twister import get_permutations
+from cachetools import TTLCache
 
-import time
+# Przechowujemy maks. 50k alertów przez 24h
+seen_alerts = TTLCache(maxsize=50000, ttl=86400)
+
+semaphore = asyncio.Semaphore(50)  # max 10 równoległych zapytań do dnstwister
 
 # Address of the local CertStream-compatible WebSocket server
 CERTSTREAM_URL = "ws://127.0.0.1:8080"
@@ -28,9 +33,9 @@ if not os.path.exists(OUTPUT_FILE) or os.stat(OUTPUT_FILE).st_size == 0:
         writer = csv.writer(csvfile)
         # Headers
         writer.writerow([
-            "timestamp", "domain", "brand_match", "similarity_score",
-            "issuer", "tld", "tld_suspicious", "has_keyword",
-            "entropy", "registration_days", "score"
+            "timestamp", "domain", "brand_match", "similarity_score", "issuer",
+            "tld", "tld_suspicious", "has_keyword", "entropy", "registration_days",
+            "cn_mismatch", "ocsp_missing", "short_lived", "brand_in_subdomain", "score"
         ])
 
 
@@ -49,6 +54,49 @@ async def process_worker():
         finally:
             queue.task_done()
 
+async def process_domain(domain, issuer, timestamp, cert_data, writer):
+    async with semaphore:
+        try:
+            domain = domain.lstrip("*.")  # usuń prefix '*.' jeśli jest
+            permutations = await get_permutations(domain)
+            to_check = {domain}
+
+
+            for entry in permutations:
+                if isinstance(entry, dict) and entry.get("dns-a"):
+                    to_check.add(entry["domain"])
+                elif isinstance(entry, str):
+                    to_check.add(entry)
+
+            processed = set()
+            for fuzzed_domain in to_check:
+                if fuzzed_domain in processed:
+                    continue
+                processed.add(fuzzed_domain)
+
+                suspicious, brand, score_match = is_similar(fuzzed_domain)
+                if not suspicious:
+                    continue
+
+                reg_days = domain_registration_age(domain)
+                tld, tld_suspicious, has_keyword, entropy, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score = extract_features(
+                    domain, issuer, reg_days, score_match, cert_data.get("leaf_cert", {})
+                )
+
+                key = (fuzzed_domain, brand)
+                if key not in seen_alerts:
+                    seen_alerts[key] = True
+                    print(f"[{timestamp}] ALERT: {fuzzed_domain} ~ {brand} (score={score:.2f})")
+                    writer.writerow([
+                        timestamp, domain, brand, f"{score_match:.2f}", issuer,
+                        tld, tld_suspicious, has_keyword, entropy, reg_days,
+                        cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score
+                    ])
+
+        except Exception as e:
+            print(f"[ERROR] Failed domain processing: {domain}")
+            import traceback; traceback.print_exc()
+
 async def process_message(message):
     data = json.loads(message)
     if data.get("message_type") != "certificate_update":
@@ -61,56 +109,13 @@ async def process_message(message):
 
     with open(OUTPUT_FILE, "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
-
-        processed_domains = set()
+        tasks = []
 
         for domain in domains:
-            try:
-                # Add original domain
-                to_check = {domain}
+            tasks.append(process_domain(domain, issuer, timestamp,cert_data, writer))
 
-                # Add fuzzed domains from dnstwister
-                permutations = get_permutations(domain)
-                for entry in permutations:
-                    if entry.get("dns-a"):  # only if the domain resolves
-                        to_check.add(entry["domain"])
+        await asyncio.gather(*tasks)
 
-                for fuzzed_domain in to_check:
-                    if fuzzed_domain in processed_domains:
-                        continue  # skip already processed
-                    processed_domains.add(fuzzed_domain)
-
-                    suspicious, brand, score_match = is_similar(fuzzed_domain)
-                    if not suspicious:
-                        continue
-
-                    reg_days = domain_registration_age(fuzzed_domain)
-                    tld, tld_suspicious, has_keyword, entropy, score = extract_features(
-                        fuzzed_domain, issuer, reg_days, score_match
-                    )
-
-                    print(f"[{timestamp}] ALERT: {fuzzed_domain} ~ {brand} (score={score:.2f})")
-
-                    writer.writerow([
-                        timestamp, fuzzed_domain, brand, f"{score_match:.2f}", issuer,
-                        tld, tld_suspicious, has_keyword, entropy, reg_days, score
-                    ])
-
-            except Exception as e:
-                print(f"[ERROR] Failed dnstwister enrichment for domain: {domain}")
-                traceback.print_exc()
-
-            reg_days = domain_registration_age(domain)
-            tld, tld_suspicious, has_keyword, entropy, score = extract_features(
-                domain, issuer, reg_days, score_match
-            )
-
-            print(f"[{timestamp}] ALERT: {domain} ~ {brand} (score={score:.2f})")
-
-            writer.writerow([
-                timestamp, domain, brand, f"{score_match:.2f}", issuer,
-                tld, tld_suspicious, has_keyword, entropy, reg_days, score
-            ])
 
 # Persistent client loop with reconnection on failure
 async def certstream_client():

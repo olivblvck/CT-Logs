@@ -5,7 +5,7 @@ from collections import Counter
 import os
 import whois
 import dns.resolver
-import datetime
+from datetime import datetime
 
 # Load a list of known brand domains from a text file
 def load_brand_domains(filepath=None):
@@ -17,6 +17,22 @@ def load_brand_domains(filepath=None):
         return [line.strip() for line in f if line.strip()]
 
 BRAND_DOMAINS = load_brand_domains()
+
+def has_brand_in_subdomain(domain: str) -> (bool, str):
+    """
+    Sprawdza, czy subdomena zawiera znany brand (np. paypal.security.com)
+    """
+    parts = domain.lower().split(".")
+    if len(parts) < 3:
+        return False, None  # Brak subdomeny
+
+    subdomain_parts = parts[:-2]  # Wszystko przed główną domeną i TLD
+    subdomain = ".".join(subdomain_parts)
+
+    for brand in BRAND_DOMAINS:
+        if brand.lower() in subdomain:
+            return True, brand
+    return False, None
 
 # Check if a domain is similar to any known brand using Levenshtein similarity
 def is_similar(domain, threshold=0.8):
@@ -376,16 +392,16 @@ def is_known_false_positive(domain):
 # Estimate domain age in days using WHOIS creation date
 def domain_registration_age(domain):
     try:
-        info = whois.whois(domain)
-        creation_date = info.creation_date
+        w = whois.whois(domain)
+        creation_date = w.creation_date
         if isinstance(creation_date, list):
             creation_date = creation_date[0]
-        if not creation_date:
-            return None
-        age_days = (datetime.datetime.now() - creation_date).days
-        return age_days
-    except:
-        return None
+        if creation_date is None:
+            return -1
+        return (datetime.now() - creation_date).days
+    except Exception as e:
+        print(f"[WARN] WHOIS lookup failed for {domain}: {e}")
+        return -1
 
 # Check if a domain has valid DNS A records (currently unused)
 def has_valid_dns(domain):
@@ -402,7 +418,11 @@ def phishing_score(
     tld_suspicious: bool,
     issuer: str,
     registration_days: int,
-    similarity_score: float
+    similarity_score: float,
+    cn_mismatch: bool,
+    ocsp_missing: bool,
+    short_lived: bool,
+    brand_in_subdomain: bool
 ) -> float:
     score = 0.0
 
@@ -421,6 +441,14 @@ def phishing_score(
         score += 1
     if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."}:
         score += 1
+    if cn_mismatch:
+        score += 1.5
+    if ocsp_missing:
+        score += 1.5
+    if short_lived:
+        score += 1.5
+    if brand_in_subdomain:
+        score += 1.0
 
     # Adjust score based on domain age
     if registration_days is not None:
@@ -437,11 +465,57 @@ def phishing_score(
     # Cap score at 10 and round
     return round(min(score, 10), 2)
 
+
+def parse_time(ts: str) -> datetime | None:
+    try:
+        return datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S")
+    except:
+        return None
+
+
 # Wrapper function to extract all features needed for scoring
-def extract_features(domain: str, issuer: str, registration_days: int, similarity_score: float):
+def extract_features(domain: str, issuer: str, registration_days: int, similarity_score: float, cert: dict):
     tld = domain.split(".")[-1]
     tld_suspicious = tld in TLD_SUSPICIOUS
     has_keyword = contains_suspicious_word(domain)
     entropy = round(calculate_entropy(domain), 2)
-    score = phishing_score(entropy, has_keyword, tld_suspicious, issuer, registration_days, similarity_score)
-    return tld, tld_suspicious, has_keyword, entropy, score
+
+    # --- CN mismatch detection ---
+    subject = cert.get("subject", {})
+    common_name = subject.get("CN")
+    san = cert.get("all_domains", [])
+
+    # Jeśli CN istnieje i nie ma go w SAN → potencjalna anomalia
+    cn_mismatch = common_name not in san if common_name and san else False
+
+    # --- OCSP / CRL presence check ---
+    ocsp_urls = cert.get("ocsp_urls", [])
+    crl_urls = cert.get("crl_distribution_points", [])
+    ocsp_missing = not ocsp_urls and not crl_urls
+
+    # --- Short-lived cert detection ---
+    not_before = cert.get("not_before")
+    not_after = cert.get("not_after")
+    short_lived = False
+    try:
+        if not_before and not_after:
+            # Zamiana na datetime i różnica
+            not_before_dt = datetime.datetime.utcfromtimestamp(not_before)
+            not_after_dt = datetime.datetime.utcfromtimestamp(not_after)
+            lifetime_days = (not_after_dt - not_before_dt).days
+            short_lived = lifetime_days <= 14
+    except Exception:
+        pass  # Jeśli coś poszło nie tak, nie traktujemy jako short-lived
+
+    brand_in_subdomain, subdomain_brand = has_brand_in_subdomain(domain)
+
+    score = phishing_score(
+        entropy, has_keyword, tld_suspicious, issuer, registration_days,
+        similarity_score, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain
+    )
+
+    return (
+        tld, tld_suspicious, has_keyword, entropy,
+        cn_mismatch, ocsp_missing, short_lived,
+        brand_in_subdomain, score
+    )
