@@ -64,16 +64,26 @@ CT-Logs/
 │   └── stats.py
 ├── certstream/
 │   └── listener.py
-├── utils/
-│   ├── dns_twister.py
-│   └── who_is.py
 ├── data/
 │   └── websites.txt
 ├── output/
-│   ├──suspected_phishing.csv
-│   └──plots/ (...)
+│   ├── suspected_phishing.csv
+│   └── plots/ 
+│       ├── domain_length.png
+│       ├── registration_age_log.png
+│       ├── score_distribution.png
+│       ├── score_vs_age.png
+│       ├── score_vs_brand_match.png
+│       ├── score_vs_entropy.png
+│       ├── score_vs_issuer.png
+│       ├── score_vs_keyword.png
+│       ├── tld_vs_issuer.png
+│       └── top_tlds.png
+├── utils/
+│   ├── dns_twister.py
+│   └── who_is.py
 ├── requirements.txt
-├── README.md
+└──README.md
 ```
 
 ---
