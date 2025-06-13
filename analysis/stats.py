@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import numpy as np
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
@@ -11,6 +12,8 @@ os.makedirs(PLOTS_PATH, exist_ok=True)
 
 # Load data
 df = pd.read_csv(DATA_PATH)
+
+df = df[df["score"].notna() & (df["score"] >= 0)]
 
 # Remove exact duplicate rows
 df.drop_duplicates(inplace=True)
@@ -70,7 +73,7 @@ def label_risk(score):
 
 df["risk_level"] = df["score"].apply(label_risk)
 print("Risk level distribution:")
-print(df["risk_level"].value_counts(), "\n")
+print(df["risk_level"].value_counts().reindex(["low", "medium", "high"]).fillna(0).astype(int), "\n")
 
 # 1. Phishing score distribution
 plt.hist(df["score"].dropna(), bins=range(0, 12), edgecolor='black')
@@ -124,7 +127,7 @@ plt.close()
 # 7. Score by suspicious keyword presence
 sns.boxplot(data=df, x="has_keyword", y="score")
 plt.title("Phishing Score vs Suspicious Keyword Presence")
-plt.xticks([0, 1], ["Absent", "Present"])
+plt.xticks([0, 1], ["Absent", "Present"]) if df["has_keyword"].dtype != bool else None
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_keyword.png"))
 plt.close()
@@ -135,5 +138,30 @@ plt.title("Top 10 Domain Endings (TLDs)")
 plt.xlabel("TLD")
 plt.ylabel("Count")
 plt.tight_layout()
-plt.savefig(os.path.join(PLOTS_PATH, "top_tld.png"))
+plt.savefig(os.path.join(PLOTS_PATH, "top_tlds.png"))
 plt.close()
+
+# Dodaj histogram rejestracji domen z logarytmiczną skalą
+df["registration_days"].hist(bins=60)
+plt.yscale("log")
+plt.title("Domain Age Distribution (log scale)")
+plt.xlabel("Age in days")
+plt.ylabel("Count (log)")
+plt.tight_layout()
+plt.savefig(os.path.join(PLOTS_PATH, "registration_age_log.png"))
+plt.close()
+
+top_pairs = df.groupby(["domain", "brand_match"]).size().reset_index(name="count")
+top_pairs = top_pairs.sort_values("count", ascending=False).head(10)
+print("Top spoofed domain-brand combinations:")
+print(top_pairs, "\n")
+
+top_issuers = df["issuer"].value_counts().head(6).index
+sns.boxplot(data=df[df["issuer"].isin(top_issuers)], x="issuer", y="score")
+plt.title("Score Distribution by Issuer")
+plt.xticks(rotation=30)
+plt.tight_layout()
+plt.savefig(os.path.join(PLOTS_PATH, "score_vs_issuer.png"))
+plt.close()
+
+print("Domains registered in last 14 days:", (df["registration_days"] < 14).sum())

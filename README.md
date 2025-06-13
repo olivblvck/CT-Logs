@@ -138,6 +138,7 @@ The script saves results to `output/suspected_phishing.csv`, with the following 
 - `brand_in_subdomain`
 - `score`
 
+> Duplicate detections with identical features (except timestamp) are automatically deduplicated before analysis.
 ---
 
 ## Statistical Analysis
@@ -155,6 +156,11 @@ This script provides:
 - Domains containing phishing-like keywords
 - Most common matched brands
 - Distribution of phishing scores
+- Score vs entropy and domain age
+- Score vs issuer and brand match
+- Score by presence of suspicious keyword
+- Age distribution (log scale)
+- Frequency heatmap: TLD vs Issuer
 
 ---
 ## Performance Optimizations
@@ -163,6 +169,8 @@ This script provides:
 - Permutation checks are limited (max 30), and WHOIS is only called for domains flagged as suspicious
 - Uses in-memory caches (`TTLCache` and `lru_cache`) to prevent redundant DNS and WHOIS queries
 - Debug prints show which permutations were generated and checked (e.g. `[DEBUG]` Permutation: `xxx.com` (`base: yyy.com`))
+- Domains with missing WHOIS creation date are marked with `-1` and excluded from age-based scoring
+- Analysis script deduplicates rows to avoid skewing results from repeated entries
 ---
 
 ##  False Positives & Limitations
