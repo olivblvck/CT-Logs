@@ -5287,3 +5287,4 @@ timestamp,domain,brand_match,similarity_score,issuer,tld,tld_suspicious,has_keyw
 1749812970.971,mcla.com,mlb.com,0.80,Google Trust Services,com,False,False,2.5,-1,False,True,False,False,5.0
 1749812971.365,us-west-2.esa.mazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.64,-1,False,True,False,False,7.0
 1749812971.365,us-west-2.e5.amazonaws.com,s3-eu-west-1.amazonaws.com,0.81,Amazon,com,False,False,3.77,-1,False,True,False,False,8.0
+1749814332.92,klociibo.com,kobo.com,0.80,"GoDaddy.com, Inc.",com,False,False,2.86,-1,False,True,False,False,5.0
