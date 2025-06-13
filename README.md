@@ -185,4 +185,5 @@ This script provides:
 - Add machine learning-based phishing classifier
 - Build web dashboard for real-time alerts
 - Support for other log sources beyond CertStream
+- Crosscheck with Google Safe Browsing, Virus Total and other blacklists if the domains have been detected as malicious.
 ---
