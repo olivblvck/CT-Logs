@@ -52,10 +52,7 @@ python certstream/listener.py
 ```
 
 Suspicious domains will be saved to:
-
-```
-data/suspected_phishing.csv
-```
+`output/suspected_phishing.csv`
 ---
 
 ## Project Structure
@@ -67,6 +64,9 @@ CT-Logs/
 │   └── stats.py
 ├── certstream/
 │   └── listener.py
+├── utils/
+│   ├── dns_twister.py
+│   └── who_is.py
 ├── data/
 │   └── websites.txt
 ├── output/
@@ -83,7 +83,8 @@ CT-Logs/
 - The list of monitored brands is stored in `data/websites.txt`
 - Detection logic is based on heuristic signals, not ML (yet)
 - Accuracy depends on tuning thresholds and keyword/TLD lists
-
+- DNS permutations are limited to 30 per domain
+- WHOIS queries are cached and only executed for suspicious domains
 ---
 
 ## Features Extracted per Domain
@@ -119,7 +120,7 @@ The score is calculated based on the following features:
 
 ## Output
 
-The script saves results to `data/suspected_phishing.csv`, with the following columns:
+The script saves results to `output/suspected_phishing.csv`, with the following columns:
 
 - `timestamp`
 - `domain`
@@ -131,6 +132,10 @@ The script saves results to `data/suspected_phishing.csv`, with the following co
 - `has_keyword`
 - `entropy`
 - `registration_days`
+- `cn_mismatch`
+- `ocsp_missing`
+- `short_lived`
+- `brand_in_subdomain`
 - `score`
 
 ---
@@ -152,6 +157,13 @@ This script provides:
 - Distribution of phishing scores
 
 ---
+## Performance Optimizations
+- WHOIS rewritten to use native system `whois` command via `subprocess`, massively improving speed
+- stdout/stderr from WHOIS are suppressed using `contextlib.redirect_stdout` and `subprocess.DEVNULL`
+- Permutation checks are limited (max 30), and WHOIS is only called for domains flagged as suspicious
+- Uses in-memory caches (`TTLCache` and `lru_cache`) to prevent redundant DNS and WHOIS queries
+- Debug prints show which permutations were generated and checked (e.g. `[DEBUG]` Permutation: `xxx.com` (`base: yyy.com`))
+---
 
 ##  False Positives & Limitations
 
@@ -162,63 +174,7 @@ This script provides:
 ---
 
 ## Todo / Future Work
-
-A. FUNKCJONALNOŚĆ
-
-**DONE: 1. Strumieniowe przetwarzanie danych
-	-	Zaimplementuj pełnoprawny mechanizm kolejkowania i buforowania danych z certstream.
-	-	Obsłuż rozłączenia, timeouty, błędy sieciowe — z backoffem i reconnectem.
-	-	Dodaj możliwość asynchronicznego przetwarzania certyfikatów (np. przez asyncio, threading, multiprocessing).**
-
-
-2. System reguł heurystycznych
-
-Dodaj zaawansowane reguły wykrywania phishingu:
-	-	detekcja homografów (np. g00gle.com, arnazon.com)
-	-	słowa kluczowe w domenach (np. secure, login, verify)
-	-	anomalie w strukturze certyfikatu (CN ≠ SAN, brak OCSP, zbyt krótki czas życia)
-	-	analizuj organizację, lokalizację, wystawcę certyfikatu
-
-3. Integracja z zewnętrznymi źródłami
-	-	Sprawdzenie reputacji domeny: phishtank, virustotal, abuse.ch, URLScan.io
-	-	Generowanie podobnych domen z dnstwister i porównanie z CT Logs
-
-4. Wprowadzenie klasyfikatora ML
-	-	Zbieranie danych: podejrzane i nieszkodliwe domeny
-	-	Feature engineering (długość domeny, entropia, zawartość certyfikatu, itp.)
-	-	Trening klasyfikatora: nawet prostego drzewa decyzyjnego (sklearn) z ewaluacją metryk
-
-B. JAKOŚĆ KODU
-
-5. Refaktoryzacja struktury projektu
-	-	Podział na moduły: core/, detection/, data/, utils/, api/
-	-	Dokumentacja każdej funkcji: docstringi, typowanie (Python 3 type hints)
-	-	Jednolity styl kodu (PEP8), automatyzacja przez black lub flake8
-
-6. Testy jednostkowe
-	-	Napisz testy dla każdego komponentu: pobieranie danych, detekcja, analiza certyfikatów
-	-	Użyj pytest, mock, unittest
-
-7. Logowanie i monitoring
-	-	Zaimplementuj logging z poziomami (INFO, ERROR, DEBUG)
-	-	Zapisuj błędy z whois, dns, API do osobnych logów
-
-C. ANALIZA I RAPORT
-
-8. System ewaluacji
-	-	Metryki: precision, recall, F1-score, confusion matrix dla klasyfikatora
-	-	Porównanie skuteczności heurystyk vs ML
-	-	Przykłady wykrytych domen, błędy fałszywie pozytywne i negatywne
-
-9. Wizualizacje
-	-	Statystyki rejestrowanych domen (wykresy: typy certyfikatów, długość nazw, popularność TLD)
-	-	Heatmapy, słowa kluczowe, trend phishingowych nazw w czasie
-
-10. Raport końcowy
-	-	Schemat architektury systemu
-	-	Opis metod i uzasadnienie ich wyboru
-	-	Opis wyników z tabelami, wykresami, metrykami
-	-	Omówienie ograniczeń i możliwości dalszego rozwoju
-
-
+- Add machine learning-based phishing classifier
+- Build web dashboard for real-time alerts
+- Support for other log sources beyond CertStream
 ---
