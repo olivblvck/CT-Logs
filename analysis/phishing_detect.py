@@ -1,5 +1,6 @@
 #certstream/phishing_detect.py
-import Levenshtein
+#import Levenshtein
+from rapidfuzz.fuzz import ratio #faster than Levenshtein
 import math
 from collections import Counter
 import os
@@ -38,7 +39,7 @@ def has_brand_in_subdomain(domain: str) -> (bool, str):
 # Check if a domain is similar to any known brand using Levenshtein similarity
 def is_similar(domain, threshold=0.8):
     for brand in BRAND_DOMAINS:
-        dist = Levenshtein.ratio(domain.lower(), brand.lower())
+        dist = ratio(domain.lower(), brand.lower()) / 100.0
         if dist >= threshold and domain.lower() != brand.lower():
             if is_known_false_positive(domain):
                 return False, None, None
@@ -390,8 +391,6 @@ def score_similarity(similarity_score: float) -> float:
 def is_known_false_positive(domain):
     return any(pattern in domain.lower() for pattern in FALSE_POSITIVE_PATTERNS)
 
-
-
 # Check if a domain has valid DNS A records (currently unused)
 def has_valid_dns(domain):
     try:
@@ -508,3 +507,6 @@ def extract_features(domain: str, issuer: str, registration_days: int, similarit
         cn_mismatch, ocsp_missing, short_lived,
         brand_in_subdomain, score
     )
+
+
+

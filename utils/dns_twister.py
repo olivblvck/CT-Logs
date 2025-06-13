@@ -35,10 +35,10 @@ async def get_permutations(domain, retries=3, backoff=2):
                     async with session.get(url2, timeout=10) as response2:
                         response2.raise_for_status()
                         result = await response2.json()
-                        if isinstance(result, list) and len(result) > 30:
-                            result = result[:30]  # ogranicz do 30 permutacji
-                        _permutations_cache[domain] = result
-                        return result
+                        fuzzy_list = result.get("fuzzy_domains", [])
+                        filtered = [entry.get("domain") for entry in fuzzy_list if entry.get("domain")]
+                        _permutations_cache[domain] = filtered
+                        return filtered[:30]  # ogranicz do 30
                 except Exception as e:
                     if attempt == retries - 1:
                         raise e
