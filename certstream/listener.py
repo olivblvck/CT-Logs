@@ -1,23 +1,17 @@
 # analysis/listener.py
-import websockets
-import json
-import csv
-import os
-import re
-import gc
-import time
-import asyncio
-import traceback
-import ipaddress
-import functools
+
+import websockets, json, csv, os, re, gc, time, asyncio, traceback, ipaddress, functools
 from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
 from utils.dns_twister import get_permutations
 from utils.who_is import domain_registration_age
 from cachetools import TTLCache
 from collections import deque
 
-# you can lower value
-seen_alerts = deque(maxlen=10000)
+# FIFO buffer to prevent alerting the same domain-brand match repeatedly
+seen_alerts = deque(maxlen=10000) # you can lower value if your device has less than 8 GB RAM
+
+# Semaphore limits how many concurrent DNS Twister calls can run — critical for memory usage
+semaphore = asyncio.Semaphore(30) # you can lower value if your device has less than 8 GB RAM
 
 # Address of the local CertStream-compatible WebSocket server
 CERTSTREAM_URL = "ws://127.0.0.1:8080"
@@ -26,13 +20,14 @@ CERTSTREAM_URL = "ws://127.0.0.1:8080"
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_FILE = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
 
-# IMPORTANT: for 8GB RAM I recommend use max 20 here
-semaphore = asyncio.Semaphore(50)  # max równoległych zapytań do dnstwister
-
+# Async queues for coordinating domain processing and logging
 domain_queue = asyncio.Queue()
 log_queue = asyncio.Queue()
 log_lock = asyncio.Lock()
 
+# Regular expression to validate individual domain labels (RFC-compliant)
+# Accepts only letters, digits, and hyphens — excludes underscores and other invalid characters.
+# This prevents issues with WHOIS/DNS tools, which reject malformed domains (e.g., those containing "_").
 ALLOWED_LABEL_RE = re.compile(r"^[a-zA-Z0-9-]+$")
 
 # Ensure output directory exists
@@ -49,7 +44,7 @@ if not os.path.exists(OUTPUT_FILE) or os.stat(OUTPUT_FILE).st_size == 0:
             "cn_mismatch", "ocsp_missing", "short_lived", "brand_in_subdomain", "score"
         ])
 
-
+# Worker that handles processing of domains from queue
 async def process_worker():
     while True:
         try:
@@ -63,12 +58,14 @@ async def process_worker():
         finally:
             domain_queue.task_done()
 
+# Worker that writes logs to CSV asynchronously
 async def csv_writer_worker():
     while True:
         entry = await log_queue.get()
         await asyncio.to_thread(write_csv_row, entry)
         log_queue.task_done()
 
+# Synchronous CSV writer (used in thread)
 def write_csv_row(entry):
     try:
         with open(OUTPUT_FILE, "a", newline="") as csvfile:
@@ -77,14 +74,13 @@ def write_csv_row(entry):
     except Exception as e:
         print(f"[ERROR] Failed to write CSV row: {e}")
 
-
+# Calls dnstwister to get permutations of a domain, with basic validation
 async def get_valid_permutations(domain: str, limit: int = 30) -> set[str]:
     try:
-        ipaddress.ip_address(domain)
-        # Jest to IP – nie generujemy permutacji
+        ipaddress.ip_address(domain) # Is it an IP? then No permutations
         return {domain}
     except ValueError:
-        # Domena wygląda na złą? Pomijamy
+        # Does domain looks invalid? then skip
         if not "." in domain or len(domain) > 253 or any(len(label) > 63 for label in domain.split(".")):
             print(f"[SKIP] Ignoring invalid domain: {domain}")
             return set()
@@ -106,22 +102,24 @@ async def get_valid_permutations(domain: str, limit: int = 30) -> set[str]:
 
     return set(list(to_check)[:limit])
 
+# Core function: processes domain and its permutations, applies phishing heuristics
 async def process_domain(domain, issuer, timestamp, cert_data):
     async with semaphore:
         try:
-            domain = domain.lstrip("*.")  # usuń prefix '*.' jeśli jest
+            domain = domain.lstrip("*.")  # Remove wildcard if exists
 
+            # Detect IPs and skip permutation step
             try:
                 ipaddress.ip_address(domain)
-                # To jest IP → pomiń permutacje
+                # it's a IP → skip permutation
                 to_check = {domain}
             except ValueError:
-                # To jest nazwa domeny → OK
+                # it's domain name → OK
                 labels = domain.split(".")
                 if len(labels) > 10 or len(domain) > 120 or any(len(label) > 63 for label in labels):
                     print(f"[SKIP] Domain too complex for dnstwister: {domain}")
                     return
-                # tylko litery, cyfry i myślniki w każdej etykiecie (dozwolone wg RFC)
+                # only letters, numbers and dashes in each label (allowed by RFC)
                 if any(not ALLOWED_LABEL_RE.match(label) for label in labels):
                     print(f"[SKIP] Domain has invalid label characters for dnstwister: {domain}")
                     return
@@ -141,6 +139,7 @@ async def process_domain(domain, issuer, timestamp, cert_data):
                 #LIMITUJ liczbę domen do analizy:
                 to_check = list(to_check)[:30]
 
+            # Analyze each fuzzed domain
             processed = set()
             for fuzzed_domain in to_check:
                 if len(processed) >= 20:
@@ -159,7 +158,7 @@ async def process_domain(domain, issuer, timestamp, cert_data):
                 if not suspicious:
                     continue
 
-                #wywołuj WHOIS tylko dla podejrzanych domen
+                # Only run WHOIS if brand similarity was found
                 if suspicious:
                     # time debug - is whois slowing down the process?
                     # start = time.time()
@@ -169,7 +168,7 @@ async def process_domain(domain, issuer, timestamp, cert_data):
                 else:
                     continue
 
-
+                # Extract additional features and compute phishing score
                 tld, tld_suspicious, has_keyword, entropy, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score = extract_features(
                     fuzzed_domain, issuer, reg_days, score_match, cert_data.get("leaf_cert", {})
                 )
@@ -188,6 +187,7 @@ async def process_domain(domain, issuer, timestamp, cert_data):
             print(f"[ERROR] Failed domain processing: {domain}")
             import traceback; traceback.print_exc()
 
+# Handles each incoming WebSocket message from CertStream
 async def process_message(message):
     data = json.loads(message)
     if data.get("message_type") != "certificate_update":
@@ -199,11 +199,11 @@ async def process_message(message):
     issuer = cert_data.get("leaf_cert", {}).get("issuer", {}).get("O", "Unknown")
 
     for domain in domains:
-        domain = domain.lstrip("*.")
+        domain = domain.lstrip("*.") # Remove wildcard
         await domain_queue.put((domain, issuer, timestamp, cert_data))
 
 
-# Persistent client loop with reconnection on failure
+# Maintains a persistent connection to the CertStream WebSocket server
 async def certstream_client():
     backoff = 1
     while True:
@@ -218,10 +218,12 @@ async def certstream_client():
             print(f"[WARN] Connection failed: {e}")
             print(f"[INFO] Reconnecting in {backoff} seconds...")
             await asyncio.sleep(backoff)
-            backoff = min(backoff * 2, 60)  # exponential backoff
+            backoff = min(backoff * 2, 60)   # Exponential backoff on failure
 
+
+# Launches background workers and client producer loop
 async def main():
-    consumers = [asyncio.create_task(process_worker()) for _ in range(10)]  # np. 10 równoległych workerów
+    consumers = [asyncio.create_task(process_worker()) for _ in range(10)]   # Start 10 parallel workers
     producer = asyncio.create_task(certstream_client())
     csv_writer = asyncio.create_task(csv_writer_worker())
     await asyncio.gather(producer, csv_writer, *consumers)

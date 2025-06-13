@@ -1,34 +1,30 @@
 #certstream/phishing_detect.py
-#import Levenshtein
-from rapidfuzz.fuzz import ratio #faster than Levenshtein
-import math
+
+from rapidfuzz.fuzz import ratio # Faster alternative to Levenshtein for string similarity
 from collections import Counter
-import os
-import whois
-import dns.resolver
+import os, whois, dns.resolver, math
 from datetime import datetime
 from utils.who_is import domain_registration_age
 
-# Load a list of known brand domains from a text file
+# Loads brand domain names from a file for use in similarity and impersonation checks
 def load_brand_domains(filepath=None):
     if filepath is None:
-        base_dir = os.path.dirname(os.path.dirname(__file__))
+        base_dir = os.path.dirname(os.path.dirname(__file__)) # go to root
         filepath = os.path.join(base_dir, "data", "websites.txt")
 
     with open(filepath, "r") as f:
         return [line.strip() for line in f if line.strip()]
 
+# List of top brands (e.g., google.com, paypal.com)
 BRAND_DOMAINS = load_brand_domains()
 
+# Checks if a known brand name appears in the subdomain part (e.g., paypal.security-login.com)
 def has_brand_in_subdomain(domain: str) -> (bool, str):
-    """
-    Sprawdza, czy subdomena zawiera znany brand (np. paypal.security.com)
-    """
     parts = domain.lower().split(".")
     if len(parts) < 3:
-        return False, None  # Brak subdomeny
+        return False, None  # No subdomain present
 
-    subdomain_parts = parts[:-2]  # Wszystko przed główną domeną i TLD
+    subdomain_parts = parts[:-2]  # Drop root domain and TLD
     subdomain = ".".join(subdomain_parts)
 
     for brand in BRAND_DOMAINS:
@@ -36,17 +32,17 @@ def has_brand_in_subdomain(domain: str) -> (bool, str):
             return True, brand
     return False, None
 
-# Check if a domain is similar to any known brand using Levenshtein similarity
+# Checks for similarity to known brands using string similarity (e.g., gooogle.com vs google.com)
 def is_similar(domain, threshold=0.8):
     for brand in BRAND_DOMAINS:
         dist = ratio(domain.lower(), brand.lower()) / 100.0
         if dist >= threshold and domain.lower() != brand.lower():
             if is_known_false_positive(domain):
-                return False, None, None
+                return False, None, None # Legitimate but similar domain (e.g., AWS)
             return True, brand, dist
     return False, None, None
 
-# Check if the domain contains known phishing-related keywords
+# Looks for keywords commonly found in phishing (e.g., 'login', 'account', 'verify')
 def contains_suspicious_word(domain):
     suspicious_words = {
         "login", "verify", "secure", "update", "account", "signin",
@@ -55,12 +51,12 @@ def contains_suspicious_word(domain):
     }
     return any(word in domain.lower() for word in suspicious_words)
 
-# Calculate Shannon entropy of a domain string to detect randomness
+# Measures randomness in domain name using Shannon entropy — useful for detecting DGA
 def calculate_entropy(s):
     p, lns = Counter(s), float(len(s))
     return -sum(count / lns * math.log2(count / lns) for count in p.values())
 
-# Suspicious TLDs commonly associated with phishing, scams, and low-cost registrations.
+# Set of TLDs known to be frequently abused in phishing (e.g., .xyz, .buzz, .icu)
 TLD_SUSPICIOUS = {
     # Freenom-based and free/cheap TLDs
     "tk", "ml", "ga", "cf", "gq", "icu", "cyou", "vip", "cam", "men", "xyz", "me", "info", "sbs", "icu", "cfd"
@@ -80,7 +76,8 @@ TLD_SUSPICIOUS = {
     # Frequently reported in phishing/malware campaigns or underground markets
     "uno", "xin", "lol", "gdn", "faith", "science", "work", "run", "pro", "asia", "ws", "pw", "yt", "bd", "cam",
 }
-# Common AWS S3 and related service official endpoints to avoid false positives
+
+# List of known AWS S3 endpoints to suppress false alerts
 AWS_DOMAINS = [
     "s3-website.us-east-2.amazonaws.com",
     "s3-website-us-east-1.amazonaws.com",
@@ -369,7 +366,8 @@ AWS_DOMAINS = [
     "s3-fips.us-gov-west-1.amazonaws.com",
     "s3-eu-west-1.amazonaws.com"
 ]
-# Known hosting/CDN domains that might lead to false positives
+
+# Additional benign patterns used by CDNs, blogs, static sites etc.
 FALSE_POSITIVE_PATTERNS = [
      *AWS_DOMAINS, "s3.amazonaws.com", "cloudfront.net", "github.io", "gitlab.io",
     "firebaseapp.com", "azurewebsites.net", "fastly.net",
@@ -377,7 +375,7 @@ FALSE_POSITIVE_PATTERNS = [
     "wordpress.com", "blogspot.com", "automattic.com"
 ]
 
-# Assign a small score based on domain-brand similarity
+# Converts similarity score to phishing points
 def score_similarity(similarity_score: float) -> float:
     if similarity_score >= 0.90:
         return 1.0
@@ -387,11 +385,11 @@ def score_similarity(similarity_score: float) -> float:
         return 0.5
     return 0.0
 
-# Check if the domain matches known benign hosting/CDN services
+# Checks if a domain is a known benign false positive
 def is_known_false_positive(domain):
     return any(pattern in domain.lower() for pattern in FALSE_POSITIVE_PATTERNS)
 
-# Check if a domain has valid DNS A records (currently unused)
+# Verifies if DNS A records are resolvable (not used but useful for future DNS integrity checks)
 def has_valid_dns(domain):
     try:
         dns.resolver.resolve(domain, 'A')
@@ -399,7 +397,7 @@ def has_valid_dns(domain):
     except:
         return False
 
-# Main scoring function to calculate phishing likelihood
+# Core phishing score function — accumulates heuristic points based on domain features
 def phishing_score(
     entropy: float,
     has_keyword: bool,
@@ -414,7 +412,7 @@ def phishing_score(
 ) -> float:
     score = 0.0
 
-    # Add points based on entropy thresholds
+    # Higher entropy = higher suspicion
     if entropy >= 3.7:
         score += 3
     elif entropy >= 3.4:
@@ -422,7 +420,7 @@ def phishing_score(
     elif entropy >= 3.1:
         score += 1
 
-    # Keyword, TLD, and issuer-based adjustments
+    # Keywords, TLD reputation, free issuers, and anomalies add risk
     if has_keyword:
         score += 2
     if tld_suspicious:
@@ -438,7 +436,7 @@ def phishing_score(
     if brand_in_subdomain:
         score += 1.0
 
-    # Adjust score based on domain age
+    # Recent domains are riskier
     if registration_days is not None:
         if registration_days < 14:
             score += 3
@@ -453,7 +451,7 @@ def phishing_score(
     # Cap score at 10 and round
     return round(min(score, 10), 2)
 
-
+# Converts timestamp string to datetime object; returns None if malformed
 def parse_time(ts: str) -> datetime | None:
     try:
         return datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S")
@@ -461,19 +459,19 @@ def parse_time(ts: str) -> datetime | None:
         return None
 
 
-# Wrapper function to extract all features needed for scoring
+# Extracts all features needed for phishing score calculation for a given domain
 def extract_features(domain: str, issuer: str, registration_days: int, similarity_score: float, cert: dict):
     tld = domain.split(".")[-1]
     tld_suspicious = tld in TLD_SUSPICIOUS
     has_keyword = contains_suspicious_word(domain)
     entropy = round(calculate_entropy(domain), 2)
 
-    # --- CN mismatch detection ---
+    # -- CN mismatch detection --
     subject = cert.get("subject", {})
     common_name = subject.get("CN")
     san = cert.get("all_domains", [])
 
-    # Jeśli CN istnieje i nie ma go w SAN → potencjalna anomalia
+    # Flag mismatch if CN is missing from SAN
     cn_mismatch = common_name not in san if common_name and san else False
 
     # --- OCSP / CRL presence check ---
@@ -481,22 +479,22 @@ def extract_features(domain: str, issuer: str, registration_days: int, similarit
     crl_urls = cert.get("crl_distribution_points", [])
     ocsp_missing = not ocsp_urls and not crl_urls
 
-    # --- Short-lived cert detection ---
+    # -- Check certificate validity period --
     not_before = cert.get("not_before")
     not_after = cert.get("not_after")
     short_lived = False
     try:
         if not_before and not_after:
-            # Zamiana na datetime i różnica
             not_before_dt = datetime.datetime.utcfromtimestamp(not_before)
             not_after_dt = datetime.datetime.utcfromtimestamp(not_after)
             lifetime_days = (not_after_dt - not_before_dt).days
             short_lived = lifetime_days <= 14
     except Exception:
-        pass  # Jeśli coś poszło nie tak, nie traktujemy jako short-lived
+        pass  # If dates are malformed, skip this feature
 
     brand_in_subdomain, subdomain_brand = has_brand_in_subdomain(domain)
 
+    # Final phishing score aggregation
     score = phishing_score(
         entropy, has_keyword, tld_suspicious, issuer, registration_days,
         similarity_score, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain
