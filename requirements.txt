@@ -8,3 +8,4 @@ websockets
 requests
 aiohttp
 cachetools
+pytest-asyncio
