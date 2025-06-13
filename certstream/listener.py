@@ -3,17 +3,19 @@ import websockets
 import json
 import csv
 import os
+import re
 import time
 import asyncio
 import traceback
+import ipaddress
+import functools
 from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
 from utils.dns_twister import get_permutations
+from utils.who_is import domain_registration_age
 from cachetools import TTLCache
 
 # Przechowujemy maks. 50k alertów przez 24h
 seen_alerts = TTLCache(maxsize=50000, ttl=86400)
-
-semaphore = asyncio.Semaphore(50)  # max 10 równoległych zapytań do dnstwister
 
 # Address of the local CertStream-compatible WebSocket server
 CERTSTREAM_URL = "ws://127.0.0.1:8080"
@@ -22,7 +24,11 @@ CERTSTREAM_URL = "ws://127.0.0.1:8080"
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_FILE = os.path.join(PROJECT_ROOT, "output", "suspected_phishing.csv")
 
-queue = asyncio.Queue()
+semaphore = asyncio.Semaphore(50)  # max równoległych zapytań do dnstwister
+
+domain_queue = asyncio.Queue()
+log_queue = asyncio.Queue()
+log_lock = asyncio.Lock()
 
 # Ensure output directory exists
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
@@ -42,31 +48,94 @@ if not os.path.exists(OUTPUT_FILE) or os.stat(OUTPUT_FILE).st_size == 0:
 async def process_worker():
     while True:
         try:
-            message = await queue.get()
-        except asyncio.CancelledError:
-            break  # Nie rób nic więcej, kończ pętlę
-
-        try:
-            await process_message(message)
+            item = await domain_queue.get()
+            if item is None:
+                break
+            await process_domain(*item)
         except Exception:
             print("[ERROR] Processing failed:")
             traceback.print_exc()
         finally:
-            queue.task_done()
+            domain_queue.task_done()
 
-async def process_domain(domain, issuer, timestamp, cert_data, writer):
+async def csv_writer_worker():
+    while True:
+        entry = await log_queue.get()
+
+        async with log_lock:
+            await asyncio.to_thread(write_csv_row, entry)
+
+        log_queue.task_done()
+
+def write_csv_row(entry):
+    with open(OUTPUT_FILE, "a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(entry)
+
+
+async def get_valid_permutations(domain: str, limit: int = 30) -> set[str]:
+    domain = domain.lstrip("*.")
+
+    try:
+        ipaddress.ip_address(domain)
+        # Jest to IP – nie generujemy permutacji
+        return {domain}
+    except ValueError:
+        # Domena wygląda na złą? Pomijamy
+        if not "." in domain or len(domain) > 253 or any(len(label) > 63 for label in domain.split(".")):
+            print(f"[SKIP] Ignoring invalid domain: {domain}")
+            return set()
+
+    try:
+        permutations = await get_permutations(domain)
+    except Exception as e:
+        print(f"[SKIP] Permutation fetch failed for {domain}: {e}")
+        return set()
+
+    to_check = {domain}
+    for entry in permutations:
+        if isinstance(entry, dict) and entry.get("dns-a"):
+            to_check.add(entry["domain"])
+        elif isinstance(entry, str):
+            to_check.add(entry)
+
+    return set(list(to_check)[:limit])
+
+async def process_domain(domain, issuer, timestamp, cert_data):
     async with semaphore:
         try:
             domain = domain.lstrip("*.")  # usuń prefix '*.' jeśli jest
-            permutations = await get_permutations(domain)
-            to_check = {domain}
 
+            try:
+                ipaddress.ip_address(domain)
+                # To jest IP → pomiń permutacje
+                to_check = {domain}
+            except ValueError:
+                # To jest nazwa domeny → OK
+                labels = domain.split(".")
+                if len(labels) > 10 or len(domain) > 120 or any(len(label) > 63 for label in labels):
+                    print(f"[SKIP] Domain too complex for dnstwister: {domain}")
+                    return
+                # tylko litery, cyfry i myślniki w każdej etykiecie (dozwolone wg RFC)
+                allowed = re.compile(r"^[a-zA-Z0-9-]+$")
+                if any(not allowed.match(label) for label in labels):
+                    print(f"[SKIP] Domain has invalid label characters for dnstwister: {domain}")
+                    return
+                try:
+                    permutations = await get_permutations(domain)
+                except Exception as e:
+                    print(f"[SKIP] Dnstwister failed for {domain}: {e}")
+                    return
+                to_check = {domain}
 
-            for entry in permutations:
-                if isinstance(entry, dict) and entry.get("dns-a"):
-                    to_check.add(entry["domain"])
-                elif isinstance(entry, str):
-                    to_check.add(entry)
+                for entry in permutations:
+                    if isinstance(entry, dict) and entry.get("dns-a"):
+                        to_check.add(entry["domain"])
+                    elif isinstance(entry, str):
+                        to_check.add(entry)
+
+                #LIMITUJ liczbę domen do analizy:
+                to_check = list(to_check)[:30]
 
             processed = set()
             for fuzzed_domain in to_check:
@@ -78,17 +147,22 @@ async def process_domain(domain, issuer, timestamp, cert_data, writer):
                 if not suspicious:
                     continue
 
-                reg_days = domain_registration_age(domain)
+                # time debug - is whois slowing down the process?
+                #start = time.time()
+                reg_days = await domain_registration_age(fuzzed_domain)
+                #elapsed = time.time() - start
+                #print(f"[WHOIS] {fuzzed_domain} → {reg_days} days old (took {elapsed:.2f}s)")
+
                 tld, tld_suspicious, has_keyword, entropy, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score = extract_features(
-                    domain, issuer, reg_days, score_match, cert_data.get("leaf_cert", {})
+                    fuzzed_domain, issuer, reg_days, score_match, cert_data.get("leaf_cert", {})
                 )
 
                 key = (fuzzed_domain, brand)
                 if key not in seen_alerts:
                     seen_alerts[key] = True
                     print(f"[{timestamp}] ALERT: {fuzzed_domain} ~ {brand} (score={score:.2f})")
-                    writer.writerow([
-                        timestamp, domain, brand, f"{score_match:.2f}", issuer,
+                    await log_queue.put([
+                        timestamp, fuzzed_domain, brand, f"{score_match:.2f}", issuer,
                         tld, tld_suspicious, has_keyword, entropy, reg_days,
                         cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score
                     ])
@@ -107,14 +181,8 @@ async def process_message(message):
     timestamp = cert_data.get("seen")
     issuer = cert_data.get("leaf_cert", {}).get("issuer", {}).get("O", "Unknown")
 
-    with open(OUTPUT_FILE, "a", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        tasks = []
-
-        for domain in domains:
-            tasks.append(process_domain(domain, issuer, timestamp,cert_data, writer))
-
-        await asyncio.gather(*tasks)
+    for domain in domains:
+        await domain_queue.put((domain, issuer, timestamp, cert_data))
 
 
 # Persistent client loop with reconnection on failure
@@ -127,7 +195,7 @@ async def certstream_client():
                 backoff = 1
                 print("[INFO] Connected.")
                 async for message in ws:
-                    await queue.put(message)
+                    await process_message(message)
         except Exception as e:
             print(f"[WARN] Connection failed: {e}")
             print(f"[INFO] Reconnecting in {backoff} seconds...")
@@ -135,9 +203,10 @@ async def certstream_client():
             backoff = min(backoff * 2, 60)  # exponential backoff
 
 async def main():
-    consumer = asyncio.create_task(process_worker())
+    consumers = [asyncio.create_task(process_worker()) for _ in range(10)]  # np. 10 równoległych workerów
     producer = asyncio.create_task(certstream_client())
-    await asyncio.gather(producer, consumer)
+    csv_writer = asyncio.create_task(csv_writer_worker())
+    await asyncio.gather(producer, csv_writer, *consumers)
 
 # Main entry point
 if __name__ == "__main__":

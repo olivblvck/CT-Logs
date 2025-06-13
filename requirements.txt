@@ -4,7 +4,7 @@ seaborn
 python-Levenshtein
 python-whois
 dnspython
-websocket-client
+websockets
 requests
 aiohttp
 cachetools

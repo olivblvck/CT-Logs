@@ -6,6 +6,7 @@ import os
 import whois
 import dns.resolver
 from datetime import datetime
+from utils.who_is import domain_registration_age
 
 # Load a list of known brand domains from a text file
 def load_brand_domains(filepath=None):
@@ -389,19 +390,7 @@ def score_similarity(similarity_score: float) -> float:
 def is_known_false_positive(domain):
     return any(pattern in domain.lower() for pattern in FALSE_POSITIVE_PATTERNS)
 
-# Estimate domain age in days using WHOIS creation date
-def domain_registration_age(domain):
-    try:
-        w = whois.whois(domain)
-        creation_date = w.creation_date
-        if isinstance(creation_date, list):
-            creation_date = creation_date[0]
-        if creation_date is None:
-            return -1
-        return (datetime.now() - creation_date).days
-    except Exception as e:
-        print(f"[WARN] WHOIS lookup failed for {domain}: {e}")
-        return -1
+
 
 # Check if a domain has valid DNS A records (currently unused)
 def has_valid_dns(domain):

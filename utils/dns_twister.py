@@ -1,3 +1,4 @@
+#utils/dns_twister.py
 import time
 import json
 import aiohttp
@@ -7,9 +8,9 @@ _permutations_cache = {}
 BASE_URL = "https://dnstwister.report/api"
 
 
-BASE_URL = "https://dnstwister.report/api"
-
 async def get_permutations(domain, retries=3, backoff=2):
+    if domain in _permutations_cache:
+        return _permutations_cache[domain]
     try:
         async with aiohttp.ClientSession() as session:
             # Step 1: Get hex version of domain
@@ -33,7 +34,11 @@ async def get_permutations(domain, retries=3, backoff=2):
                     url2 = f"{BASE_URL}/fuzz/{domain_hex}"
                     async with session.get(url2, timeout=10) as response2:
                         response2.raise_for_status()
-                        return await response2.json()
+                        result = await response2.json()
+                        if isinstance(result, list) and len(result) > 30:
+                            result = result[:30]  # ogranicz do 30 permutacji
+                        _permutations_cache[domain] = result
+                        return result
                 except Exception as e:
                     if attempt == retries - 1:
                         raise e
@@ -42,9 +47,10 @@ async def get_permutations(domain, retries=3, backoff=2):
         print(f"[ERROR] aiohttp dnstwister failed for {domain}: {e}")
         raise
 
+
+
 if __name__ == "__main__":
-    try:
-        permutations = get_permutations("facebook.com")
+    async def main():
+        permutations = await get_permutations("facebook.com")
         print(permutations)
-    except Exception as e:
-        print(f"Failed to fetch permutations: {e}")
+    asyncio.run(main())
