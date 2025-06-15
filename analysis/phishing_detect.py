@@ -2,7 +2,7 @@
 
 from rapidfuzz.fuzz import ratio # Faster alternative to Levenshtein for string similarity
 from collections import Counter
-import os, whois, dns.resolver, math
+import os, dns.resolver, math
 from datetime import datetime
 from utils.who_is import domain_registration_age
 
@@ -413,31 +413,38 @@ def phishing_score(
     score = 0.0
 
     # Higher entropy = higher suspicion
-    if entropy >= 3.7:
-        score += 3
-    elif entropy >= 3.4:
-        score += 2
-    elif entropy >= 3.1:
+    if entropy >= 3.6:
+        score += 1.5
+    elif entropy >= 3.3:
+        score += 1
+    elif entropy >= 3.0:
+        score += 0.5
+
+    if has_keyword:
         score += 1
 
-    # Keywords, TLD reputation, free issuers, and anomalies add risk
-    if has_keyword:
-        score += 2
     if tld_suspicious:
         score += 1
-    if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."}:
+
+    # Free CAs are common in phishing due to ease of issuance,
+    # but we only penalize them when combined with other red flags.
+    if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."} and (registration_days < 14 or tld_suspicious or has_keyword):
         score += 1
+
     if cn_mismatch:
-        score += 1.5
+        score += 1
+
     if ocsp_missing:
-        score += 1.5
+        score += 1
+
     if short_lived:
-        score += 1.5
+        score += 1
+
     if brand_in_subdomain:
-        score += 1.0
+        score += 1
 
     # Recent domains are riskier
-    if registration_days is not None:
+    if registration_days is not None and registration_days >= 0:
         if registration_days < 14:
             score += 3
         elif registration_days < 60:
@@ -448,8 +455,7 @@ def phishing_score(
     # Add similarity bonus
     score += score_similarity(similarity_score)
 
-    # Cap score at 10 and round
-    return round(min(score, 10), 2)
+    return score
 
 # Converts timestamp string to datetime object; returns None if malformed
 def parse_time(ts: str) -> datetime | None:

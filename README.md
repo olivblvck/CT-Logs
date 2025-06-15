@@ -48,7 +48,7 @@ pip install -r requirements.txt
 ### 4. Start monitoring CT logs
 
 ```bash
-python certstream/listener.py
+python certstream/listener.py # or python -m certstream.listener
 ```
 
 Suspicious domains will be saved to:
@@ -83,7 +83,7 @@ CT-Logs/
 │   ├── dns_twister.py
 │   └── who_is.py
 ├── requirements.txt
-└──README.md
+└── README.md
 ```
 
 ---
@@ -91,7 +91,7 @@ CT-Logs/
 ## Notes
 
 - The list of monitored brands is stored in `data/websites.txt`
-- Detection logic is based on heuristic signals, not ML (yet)
+- Detection logic is based on heuristic signals
 - Accuracy depends on tuning thresholds and keyword/TLD lists
 - DNS permutations are limited to 30 per domain
 - WHOIS queries are cached and only executed for suspicious domains
@@ -105,26 +105,29 @@ For each domain found in new TLS certificates, the following features are extrac
 - **TLD Suspicious**: Whether the TLD is from a list of commonly abused TLDs
 - **Keyword Match**: Checks if the domain contains suspicious keywords like `login`, `secure`, `verify`
 - **Entropy**: Shannon entropy of the domain name – higher values may indicate algorithmically generated domains
-- **WHOIS Age**: Number of days since domain registration (if data available)
+- **WHOIS Age**: Number of days since domain registration (if data available, returns -1 days if unavailable)
 
 ---
 
 ## Phishing Score Calculation
 
-Each domain is assigned a `score` between 0 and 10, reflecting the likelihood of phishing. The higher the score, the more suspicious the domain.
+Each domain is assigned a `score` between 1 and 12,5, reflecting the likelihood of phishing. The higher the score, the more suspicious the domain.
 
 The score is calculated based on the following features:
 
-| Feature              | Condition                                               | Points   |
-|----------------------|---------------------------------------------------------|----------|
-| **Entropy**          | ≥ 3.1 → +1, ≥ 3.4 → +2, ≥ 3.7 → +3                      | +1–3     |
-| **Suspicious Keyword** | Presence of phishing-related words  (e.g. `login`, `auth`, `verify`)  | +2       |
-| **Suspicious TLD**   | Known shady TLDs (e.g. `.xyz`, `.top`, `.buzz`, `.shop`) | +1 |
-| **Issuer**           | Free/automated issuers (e.g. Let's Encrypt, ZeroSSL)    | +1 |
-| **WHOIS Age**        | <14 days → +3, <60 → +2, <180 → +1                      | +1–3     |
- |**Similarity to Brand**| Levenshtein ratio ≥ 0.80 and ≠ brand → scaled: 0.80 → +0.5, 0.85 → +0.75, ≥ 0.90 → +1.0 | +0–1|
-
-> Domains exceeding a chosen threshold (e.g. **score ≥ 4**) can be flagged as **medium** or **high-risk**.
+| Feature              | Condition                                                                          | Points   |
+|----------------------|------------------------------------------------------------------------------------|----------|
+| **Entropy**          | ≥ 3.0 → +0.5, ≥ 3.3 → +1, ≥ 3.6 → +1.5                                             | +0.5-1.5 |
+| **Suspicious Keyword** | Presence of phishing-related words  (e.g. `login`, `bank`, `verify`)               | +1       |
+| **Suspicious TLD**       | `.xyz`, `.icu`, `.top`, `.buzz`, `.shop` etc.                                      | +1       | 
+| **Issuer Risk**          | Let's Encrypt/ZeroSSL/Actalis **AND** (`age<14d` OR `suspicious_tld` OR `keyword`) | +1       | 
+| **CN Mismatch**          | Certificate Common Name ≠ domain                                                   | +1       | 
+| **OCSP Missing**         | No Online Certificate Status Protocol                                              | +1       |
+| **Short-Lived Cert**     | Certificate validity ≤ 14 days                                                     | +1       |
+| **Brand in Subdomain**   | Legitimate brand name in subdomain (e.g. `paypal.host.com`)                        | +1       | 
+| **Domain Age**           | `0-14 days → +3`, `<60 days → +2`, `<180 days → +1`                                | 1-3      | 
+| **Brand Similarity**     | `ratio ≥ 0.8 → +0.5`, `≥0.85 → +0.75`, `≥0.9 → +1.0`                               | 0-1      |
+> Domains exceeding a chosen threshold (**score ≥ 4**) can be flagged as **medium** or (**score ≥ 8**) **high-risk**.
 
 ---
 
@@ -174,18 +177,16 @@ This script provides:
 
 ---
 ## Performance Optimizations
-- WHOIS rewritten to use native system `whois` command via `subprocess`, massively improving speed
-- stdout/stderr from WHOIS are suppressed using `contextlib.redirect_stdout` and `subprocess.DEVNULL`
 - Permutation checks are limited (max 30), and WHOIS is only called for domains flagged as suspicious
 - Uses in-memory caches (`TTLCache` and `lru_cache`) to prevent redundant DNS and WHOIS queries
-- Debug prints show which permutations were generated and checked (e.g. `[DEBUG]` Permutation: `xxx.com` (`base: yyy.com`))
+- Semaphore Limits: 30 concurrent DNS Twister API calls, 10 parallel processing workers
 - Domains with missing WHOIS creation date are marked with `-1` and excluded from age-based scoring
 - Analysis script deduplicates rows to avoid skewing results from repeated entries
 ---
 
 ##  False Positives & Limitations
 
-- Domains like `*.amazonaws.com` or `*.cloudfront.net` often appear similar to brand names but are legitimate infrastructure domains.
+- Domains like `s3-eu-west-1.amazonaws.com` often appear similar to brand names but are legitimate infrastructure domains.
 - WHOIS data may be unavailable or rate-limited.
 - CT logs include a large number of benign domains; filtering is heuristic-based and not perfect.
 
@@ -193,7 +194,6 @@ This script provides:
 
 ## Todo / Future Work
 - Add machine learning-based phishing classifier
-- Build web dashboard for real-time alerts
 - Support for other log sources beyond CertStream
 - Crosscheck with Google Safe Browsing, Virus Total and other blacklists if the domains have been detected as malicious.
 ---

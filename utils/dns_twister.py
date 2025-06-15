@@ -6,9 +6,10 @@ import time
 import json
 import aiohttp
 import asyncio
+from cachetools import LRUCache
 
 # Local in-memory cache to avoid redundant API calls for the same domain
-_permutations_cache = {}
+_permutations_cache = LRUCache(maxsize=1000)
 
 # Base API URL for DNS Twister
 BASE_URL = "https://dnstwister.report/api"

@@ -2,10 +2,12 @@ pandas
 matplotlib
 seaborn
 rapidfuzz
-python-whois
+whois
 dnspython
 websockets
 requests
 aiohttp
 cachetools
+pytest
 pytest-asyncio
+requests-mock

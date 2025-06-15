@@ -75,7 +75,7 @@ print(df["score"].describe(), "\n")
 def label_risk(score):
     if pd.isna(score):
         return "unknown"
-    elif score >= 7:
+    elif score >= 8:
         return "high"
     elif score >= 4:
         return "medium"
@@ -92,7 +92,7 @@ print(df["risk_level"].value_counts().reindex(["low", "medium", "high"]).fillna(
 # --- Plots ---
 
 # 1. Distribution of phishing scores
-plt.hist(df["score"].dropna(), bins=range(2, 11), edgecolor='black')
+plt.hist(df["score"].dropna(), bins=range(2, 13), edgecolor='black')
 plt.title("Phishing Score Distribution")
 plt.xlabel("Score")
 plt.ylabel("Number of Domains")

@@ -1,7 +1,7 @@
 # analysis/listener.py
 
 import websockets, json, csv, os, re, gc, time, asyncio, traceback, ipaddress, functools
-from analysis.phishing_detect import is_similar, extract_features, domain_registration_age
+from analysis.phishing_detect import is_similar, extract_features
 from utils.dns_twister import get_permutations
 from utils.who_is import domain_registration_age
 from cachetools import TTLCache
@@ -159,14 +159,14 @@ async def process_domain(domain, issuer, timestamp, cert_data):
                     continue
 
                 # Only run WHOIS if brand similarity was found
-                if suspicious:
+                #if suspicious:
                     # time debug - is whois slowing down the process?
                     # start = time.time()
-                    reg_days = await domain_registration_age(fuzzed_domain)
+                reg_days = await domain_registration_age(fuzzed_domain)
                     # elapsed = time.time() - start
                     # print(f"[WHOIS] {fuzzed_domain} → {reg_days} days old (took {elapsed:.2f}s)")
-                else:
-                    continue
+                #else:
+                #    continue
 
                 # Extract additional features and compute phishing score
                 tld, tld_suspicious, has_keyword, entropy, cn_mismatch, ocsp_missing, short_lived, brand_in_subdomain, score = extract_features(
@@ -202,7 +202,6 @@ async def process_message(message):
         domain = domain.lstrip("*.") # Remove wildcard
         await domain_queue.put((domain, issuer, timestamp, cert_data))
 
-
 # Maintains a persistent connection to the CertStream WebSocket server
 async def certstream_client():
     backoff = 1
@@ -220,7 +219,6 @@ async def certstream_client():
             await asyncio.sleep(backoff)
             backoff = min(backoff * 2, 60)   # Exponential backoff on failure
 
-
 # Launches background workers and client producer loop
 async def main():
     consumers = [asyncio.create_task(process_worker()) for _ in range(10)]   # Start 10 parallel workers
@@ -231,5 +229,3 @@ async def main():
 # Main entry point
 if __name__ == "__main__":
     asyncio.run(main())
-
-
