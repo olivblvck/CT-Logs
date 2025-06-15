@@ -92,7 +92,7 @@ print(df["risk_level"].value_counts().reindex(["low", "medium", "high"]).fillna(
 # --- Plots ---
 
 # 1. Distribution of phishing scores
-plt.hist(df["score"].dropna(), bins=range(0, 12), edgecolor='black')
+plt.hist(df["score"].dropna(), bins=range(2, 11), edgecolor='black')
 plt.title("Phishing Score Distribution")
 plt.xlabel("Score")
 plt.ylabel("Number of Domains")
