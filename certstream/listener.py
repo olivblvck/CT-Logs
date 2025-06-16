@@ -14,7 +14,7 @@ seen_alerts = deque(maxlen=10000) # you can lower value if your device has less 
 semaphore = asyncio.Semaphore(30) # you can lower value if your device has less than 8 GB RAM
 
 # Address of the local CertStream-compatible WebSocket server
-CERTSTREAM_URL = "ws://127.0.0.1:8080"
+CERTSTREAM_URL = "ws://127.0.0.1:8080" #wss://certstream.calidog.io
 
 # Define paths for project root and output file
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -142,7 +142,7 @@ async def process_domain(domain, issuer, timestamp, cert_data):
             # Analyze each fuzzed domain
             processed = set()
             for fuzzed_domain in to_check:
-                if len(processed) >= 20:
+                if len(processed) >= 30:
                     break
                 #if len(seen_alerts) % 200 == 0:
                     #gc.collect()

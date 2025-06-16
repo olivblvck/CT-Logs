@@ -75,9 +75,9 @@ print(df["score"].describe(), "\n")
 def label_risk(score):
     if pd.isna(score):
         return "unknown"
-    elif score >= 8:
-        return "high"
     elif score >= 4:
+        return "high"
+    elif score >= 2:
         return "medium"
     else:
         return "low"
@@ -92,7 +92,7 @@ print(df["risk_level"].value_counts().reindex(["low", "medium", "high"]).fillna(
 # --- Plots ---
 
 # 1. Distribution of phishing scores
-plt.hist(df["score"].dropna(), bins=range(2, 13), edgecolor='black')
+plt.hist(df["score"].dropna(), bins=range(0, 10), edgecolor='black')
 plt.title("Phishing Score Distribution")
 plt.xlabel("Score")
 plt.ylabel("Number of Domains")
@@ -108,11 +108,13 @@ plt.savefig(os.path.join(PLOTS_PATH, "score_vs_entropy.png"))
 plt.close()
 
 # 3. Scatter plot: domain age vs phishing score
-sns.scatterplot(data=df, x="registration_days", y="score")
+df_age = df[df["registration_days"] >= 0]  # local filtering only for this plot
+sns.scatterplot(data=df_age, x="registration_days", y="score")
 plt.title("Phishing Score vs Domain Age (days)")
 plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_age.png"))
 plt.close()
+
 
 # 4. Histogram: distribution of domain lengths
 df["domain_length"] = df["domain"].astype(str).apply(len)
@@ -157,8 +159,9 @@ plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "top_tlds.png"))
 plt.close()
 
-# 9. Histogram: domain age in days (log scale)
-df["registration_days"].hist(bins=60)
+# 9. Histogram: domain age in days (log scale), filtering out age < 0
+df_age_log = df[df["registration_days"] >= 0]  # local filtering
+df_age_log["registration_days"].hist(bins=60)
 plt.yscale("log")
 plt.title("Domain Age Distribution (log scale)")
 plt.xlabel("Age in days")
@@ -182,5 +185,21 @@ plt.tight_layout()
 plt.savefig(os.path.join(PLOTS_PATH, "score_vs_issuer.png"))
 plt.close()
 
-# Count of domains registered within the last 14 days
-print("Domains registered in last 14 days:", (df["registration_days"] < 14).sum())
+# 12. Risk Level Pie Chart (low=green, medium=yellow, high=red)
+ordered_labels = ["low", "medium", "high"]
+risk_counts = df["risk_level"].value_counts().reindex(ordered_labels).fillna(0)
+
+plt.figure(figsize=(8, 8))
+plt.pie(risk_counts,
+        labels=ordered_labels,
+        autopct='%1.1f%%',
+        colors=['#4CAF50', '#FFC107', '#F44336'],  # green, yellow, red
+        startangle=90)
+plt.title('Distribution of Domain Risk Levels')
+plt.tight_layout()
+plt.savefig(os.path.join(PLOTS_PATH, "risk_level_pie.png"))
+plt.close()
+
+
+# Count of domains registered within the last 30 days
+print("Domains registered in last 30 days:", (df["registration_days"] < 30).sum())

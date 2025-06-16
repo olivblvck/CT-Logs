@@ -378,11 +378,11 @@ FALSE_POSITIVE_PATTERNS = [
 # Converts similarity score to phishing points
 def score_similarity(similarity_score: float) -> float:
     if similarity_score >= 0.90:
-        return 1.0
+        return 2.0
     elif similarity_score >= 0.85:
-        return 0.75
+        return 1.5
     elif similarity_score >= 0.80:
-        return 0.5
+        return 1
     return 0.0
 
 # Checks if a domain is a known benign false positive
@@ -415,9 +415,9 @@ def phishing_score(
     # Higher entropy = higher suspicion
     if entropy >= 3.6:
         score += 1.5
-    elif entropy >= 3.3:
+    elif entropy >= 3.2:
         score += 1
-    elif entropy >= 3.0:
+    elif entropy >= 2.8:
         score += 0.5
 
     if has_keyword:
@@ -428,7 +428,7 @@ def phishing_score(
 
     # Free CAs are common in phishing due to ease of issuance,
     # but we only penalize them when combined with other red flags.
-    if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."} and (registration_days < 14 or tld_suspicious or has_keyword):
+    if issuer in {"ZeroSSL", "Let's Encrypt", "Actalis S.p.A."} :
         score += 1
 
     if cn_mismatch:
@@ -445,17 +445,17 @@ def phishing_score(
 
     # Recent domains are riskier
     if registration_days is not None and registration_days >= 0:
-        if registration_days < 14:
+        if registration_days < 30:
             score += 3
-        elif registration_days < 60:
+        elif registration_days < 90:
             score += 2
-        elif registration_days < 180:
+        elif registration_days < 360:
             score += 1
 
     # Add similarity bonus
     score += score_similarity(similarity_score)
 
-    return score
+    return min(score, 10) #max 10 points
 
 # Converts timestamp string to datetime object; returns None if malformed
 def parse_time(ts: str) -> datetime | None:
@@ -473,29 +473,68 @@ def extract_features(domain: str, issuer: str, registration_days: int, similarit
     entropy = round(calculate_entropy(domain), 2)
 
     # -- CN mismatch detection --
-    subject = cert.get("subject", {})
-    common_name = subject.get("CN")
-    san = cert.get("all_domains", [])
+    def normalize_domain(d):
+        return d.lower().replace("*.", "")
 
-    # Flag mismatch if CN is missing from SAN
-    cn_mismatch = common_name not in san if common_name and san else False
+    subject = cert.get("subject", {})
+    if isinstance(subject, list):
+        subject = subject[0] if subject else {}
+
+    common_name = subject.get("CN", "")
+
+    # Pobierz SAN
+    san = []
+    extensions = cert.get("extensions", {})
+    if "subjectAltName" in extensions:
+        san_raw = extensions["subjectAltName"]
+        if isinstance(san_raw, str):
+            san = [d.strip() for d in san_raw.split(",") if "DNS:" in d]
+            san = [d.replace("DNS:", "").strip() for d in san]
+        elif isinstance(san_raw, list):
+            san = [d.replace("DNS:", "").strip() for d in san_raw if "DNS:" in str(d)]
+
+    # Sprawdź czy CN pasuje do którejkolwiek z domen SAN (uwzględniając wildcardy)
+    cn_mismatch = True
+    if common_name:
+        cn_normalized = normalize_domain(common_name)
+        for d in san:
+            if normalize_domain(d) == cn_normalized:
+                cn_mismatch = False
+                break
+            if d.startswith("*.") and cn_normalized.endswith(normalize_domain(d)):
+                cn_mismatch = False
+                break
+    else:
+        cn_mismatch = False
 
     # --- OCSP / CRL presence check ---
-    ocsp_urls = cert.get("ocsp_urls", [])
-    crl_urls = cert.get("crl_distribution_points", [])
-    ocsp_missing = not ocsp_urls and not crl_urls
+    extensions = cert.get("extensions", {})
+    ocsp_urls = [extensions.get("authorityInfoAccess")] if "authorityInfoAccess" in extensions else []
+    crl_urls = [extensions.get("crlDistributionPoints")] if "crlDistributionPoints" in extensions else []
+    ocsp_missing = not any("ocsp" in str(url).lower() for url in ocsp_urls) and not crl_urls
 
     # -- Check certificate validity period --
     not_before = cert.get("not_before")
     not_after = cert.get("not_after")
     short_lived = False
+
     try:
         if not_before and not_after:
-            not_before_dt = datetime.datetime.utcfromtimestamp(not_before)
-            not_after_dt = datetime.datetime.utcfromtimestamp(not_after)
-            lifetime_days = (not_after_dt - not_before_dt).days
-            short_lived = lifetime_days <= 14
-    except Exception:
+             # Konwersja na timestamp jeśli to string
+             if isinstance(not_before, str):
+                 not_before_dt = datetime.strptime(not_before, "%Y-%m-%dT%H:%M:%S")
+             else:
+                 not_before_dt = datetime.fromtimestamp(not_before)
+
+             if isinstance(not_after, str):
+                 not_after_dt = datetime.strptime(not_after, "%Y-%m-%dT%H:%M:%S")
+             else:
+                 not_after_dt = datetime.fromtimestamp(not_after)
+
+             # Oblicz pozostałe dni do wygaśnięcia
+             remaining_days = (not_after_dt - datetime.now()).days
+             short_lived = remaining_days <= 30  # Ustawienie progu na 30 dni
+    except Exception as e:
         pass  # If dates are malformed, skip this feature
 
     brand_in_subdomain, subdomain_brand = has_brand_in_subdomain(domain)
@@ -513,4 +552,128 @@ def extract_features(domain: str, issuer: str, registration_days: int, similarit
     )
 
 
+# def test_certificate_features():
+#     """Test only certificate features detection (no scoring)"""
+#     test_cases = [
+#         {
+#             "name": "Perfectly valid cert",
+#             "cert": {
+#                 "subject": {"CN": "example.com"},
+#                 "extensions": {
+#                     "subjectAltName": "DNS:example.com, DNS:*.example.com",
+#                     "authorityInfoAccess": "OCSP - URI:http://ocsp.example.com",
+#                     "crlDistributionPoints": "http://crl.example.com"
+#                 },
+#                 "not_before": "2023-01-01T00:00:00",
+#                 "not_after": "2024-01-01T00:00:00"  # 1 year validity
+#             },
+#             "expected": {
+#                 "cn_mismatch": False,
+#                 "ocsp_missing": False,
+#                 "short_lived": False
+#             }
+#         },
+#         {
+#             "name": "CN mismatch",
+#             "cert": {
+#                 "subject": {"CN": "real.com"},
+#                 "extensions": {
+#                     "subjectAltName": "DNS:fake.com",
+#                     "authorityInfoAccess": "OCSP - URI:http://ocsp.example.com"
+#                 },
+#                 "not_before": "2023-01-01T00:00:00",
+#                 "not_after": "2023-01-15T00:00:00"  # 14 days validity
+#             },
+#             "expected": {
+#                 "cn_mismatch": True,
+#                 "ocsp_missing": False,
+#                 "short_lived": True
+#             }
+#         },
+#         {
+#             "name": "Missing OCSP/CRL",
+#             "cert": {
+#                 "subject": {"CN": "insecure.org"},
+#                 "extensions": {
+#                     "subjectAltName": "DNS:insecure.org"
+#                 },  # Brak OCSP/CRL
+#                 "not_before": 1672531200,  # Unix timestamp
+#                 "not_after": 1675209600  # 30 days validity
+#             },
+#             "expected": {
+#                 "cn_mismatch": False,
+#                 "ocsp_missing": True,
+#                 "short_lived": False
+#             }
+#         }
+#     ]
+#
+#     print("\nTesting certificate features detection:")
+#     for case in test_cases:
+#         print(f"\nTest: {case['name']}")
+#         print(f"Cert data: {case['cert']}")
+#
+#         # Używamy pustej domeny i domyślnych wartości, skupiamy się tylko na certyfikacie
+#         _, _, _, _, cn_mismatch, ocsp_missing, short_lived, _, _ = extract_features(
+#             domain="test.com",
+#             issuer="Test CA",
+#             registration_days=100,
+#             similarity_score=0,
+#             cert=case["cert"]
+#         )
+#
+#         print(f"Results: cn_mismatch={cn_mismatch}, ocsp_missing={ocsp_missing}, short_lived={short_lived}")
+#
+#         assert cn_mismatch == case["expected"]["cn_mismatch"], f"CN mismatch failed for {case['name']}"
+#         assert ocsp_missing == case["expected"]["ocsp_missing"], f"OCSP check failed for {case['name']}"
+#         assert short_lived == case["expected"]["short_lived"], f"Certificate lifetime check failed for {case['name']}"
+#         print("✓ Passed")
+#
+#
+
+#
+# def test_cn_mismatch_detection():
+#     """Test różnych przypadków CN mismatch"""
+#     test_cases = [
+#         {
+#             "name": "Wildcard match 1",
+#             "cert": {
+#                 "subject": {"CN": "sub.example.com"},
+#                 "extensions": {"subjectAltName": "DNS:*.example.com"}
+#             },
+#             "expected": False
+#         },
+#         {
+#             "name": "Wildcard match 2",
+#             "cert": {
+#                 "subject": {"CN": "example.com"},
+#                 "extensions": {"subjectAltName": "DNS:*.example.com"}
+#             },
+#             "expected": False
+#         },
+#         {
+#             "name": "Wildcard mismatch",
+#             "cert": {
+#                 "subject": {"CN": "evil.com"},
+#                 "extensions": {"subjectAltName": "DNS:*.example.com"}
+#             },
+#             "expected": True
+#         }
+#     ]
+#
+#     print("\nTesting CN mismatch with wildcards:")
+#     for case in test_cases:
+#         _, _, _, _, cn_mismatch, _, _, _, _ = extract_features(
+#             domain="test.com",
+#             issuer="Test CA",
+#             registration_days=100,
+#             similarity_score=0,
+#             cert=case["cert"]
+#         )
+#         result = "MISMATCH" if cn_mismatch else "MATCH"
+#         print(f"{case['name']}: {result} (expected: {'MISMATCH' if case['expected'] else 'MATCH'})")
+#         assert cn_mismatch == case["expected"], f"Failed: {case['name']}"
+# if __name__ == "__main__":
+#     test_cn_mismatch_detection()
+    #     test_certificate_features()
 
